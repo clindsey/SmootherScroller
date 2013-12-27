@@ -1,0 +1,7 @@
+require 'models/{{#camelize}}{{name}}{{/camelize}}'
+
+{{#camelize}}{{name}}{{/camelize}}Model = moduleLibrary.get '{{#camelize}}{{name}}{{/camelize}}.Model'
+
+describe 'Model {{#camelize}}{{name}}{{/camelize}}', ->
+  beforeEach ->
+    @{{name}}Model = new {{#camelize}}{{name}}{{/camelize}}Model

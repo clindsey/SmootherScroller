@@ -1,0 +1,10 @@
+require 'scenes/{{#camelize}}{{name}}{{/camelize}}'
+
+{{#camelize}}{{name}}{{/camelize}}Scene = moduleLibrary.get '{{#camelize}}{{name}}{{/camelize}}.Scene'
+
+describe 'Scene {{#camelize}}{{name}}{{/camelize}}', ->
+  beforeEach ->
+    @{{name}}Scene = {{#camelize}}{{name}}{{/camelize}}Scene.create()
+
+  afterEach ->
+    @{{name}}Scene.dispose()

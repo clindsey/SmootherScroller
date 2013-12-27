@@ -1,0 +1,28 @@
+{
+  "name": "WorldGenerator",
+  "version": "0.0.1",
+  "ignore": [
+    "**/.*",
+    "bower_components",
+    "test",
+    "features",
+    "public"
+  ],
+  "dependencies": {
+    "underscore": "~1.5.2",
+    "jquery": "~2.0.3",
+    "chai": "~1.7.2",
+    "mocha": "~1.12.0",
+    "sinonjs": "~1.7.1",
+    "sinon-chai": "~2.4.0",
+    "EaselJS": "*",
+    "gamecore.js": "https://github.com/clindsey/gamecore.js.git",
+    "EventBus": "https://github.com/krasimir/EventBus.git",
+    "rng-js": "~1.0.0",
+    "createjs-tweenjs": "*",
+    "commonjs": "https://gist.github.com/6786792.git",
+    "mochaCov": "https://gist.github.com/6786989.git",
+    "moduleLibrary": "http://gist.github.com/7273186.git",
+    "mochaTestHelper": "http://gist.github.com/7273584.git"
+  }
+}

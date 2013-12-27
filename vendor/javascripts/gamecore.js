@@ -1,0 +1,1 @@
+../../bower_components/gamecore.js/gamecore.js

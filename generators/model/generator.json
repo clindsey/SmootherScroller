@@ -1,0 +1,18 @@
+{
+  "files": [
+    {
+      "from": "model.coffee.hbs"
+    , "to": "app/models/{{#camelize}}{{name}}{{/camelize}}.coffee"
+    }
+  ]
+, "dependencies": [
+    {
+      "name": "model-unit"
+    , "params": "{{name}}"
+    }
+  , {
+      "name": "model-integration"
+    , "params": "{{name}}"
+    }
+  ]
+}

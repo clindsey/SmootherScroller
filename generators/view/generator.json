@@ -1,0 +1,18 @@
+{
+  "files": [
+    {
+      "from": "view.coffee.hbs"
+    , "to": "app/views/{{#camelize}}{{name}}{{/camelize}}.coffee"
+    }
+  ]
+, "dependencies": [
+    {
+      "name": "view-unit"
+    , "params": "{{name}}"
+    }
+  , {
+      "name": "view-integration"
+    , "params": "{{name}}"
+    }
+  ]
+}

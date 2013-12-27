@@ -1,0 +1,8 @@
+moduleLibrary.define '{{#camelize}}{{name}}{{/camelize}}.Model', gamecore.Pooled.extend '{{#camelize}}{{name}}{{/camelize}}Model',
+    create: ->
+      {{name}}Model = @_super()
+
+      {{name}}Model
+  ,
+    dispose: ->
+      @release()

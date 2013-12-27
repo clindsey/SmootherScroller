@@ -1,0 +1,18 @@
+{
+  "files": [
+    {
+      "from": "scene.coffee.hbs"
+    , "to": "app/scenes/{{#camelize}}{{name}}{{/camelize}}.coffee"
+    }
+  ]
+, "dependencies": [
+    {
+      "name": "scene-unit"
+    , "params": "{{name}}"
+    }
+  , {
+      "name": "scene-integration"
+    , "params": "{{name}}"
+    }
+  ]
+}

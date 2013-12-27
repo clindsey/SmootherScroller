@@ -1,0 +1,9 @@
+{
+  "files": [
+    {
+      "from": "scene-unit.coffee.hbs"
+    , "to": "test/unit/scenes/{{name}}.coffee"
+    }
+  ]
+, "dependencies": []
+}

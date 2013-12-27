@@ -1,0 +1,8 @@
+moduleLibrary.define '{{#camelize}}{{name}}{{/camelize}}.Scene', gamecore.Pooled.extend '{{#camelize}}{{name}}{{/camelize}}Scene',
+    create: ->
+      {{name}}Scene = @_super()
+
+      {{name}}Scene
+  ,
+    dispose: ->
+      @release()

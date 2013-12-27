@@ -1,0 +1,31 @@
+{
+  "name": "WorldGenerator",
+  "private": true,
+  "dependencies": {
+    "grunt": "~0.4.1",
+    "bower": "~1.2.7",
+    "grunt-cli": "~0.1.9",
+    "grunt-connect-pushstate": "~0.1.0"
+  },
+  "devDependencies": {
+    "grunt-contrib-connect": "~0.5.0",
+    "grunt-contrib-watch": "~0.5.3",
+    "matchdep": "~0.3.0",
+    "connect-livereload": "~0.3.0",
+    "grunt-tusk-coffee": "0.0.3",
+    "grunt-contrib-copy": "~0.4.1",
+    "grunt-contrib-cssmin": "~0.6.1",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-mocha": "~0.4.1",
+    "grunt-mocha-cov": "0.0.7",
+    "grunt-blanket": "0.0.8",
+    "grunt-contrib-coffee": "~0.7.0",
+    "grunt-commonjs": "https://github.com/clindsey/grunt-commonjs/archive/0.3.0.tar.gz",
+    "grunt-docco": "git://github.com/clindsey/grunt-docco.git",
+    "scaffolt": "~0.4.0",
+    "grunt-contrib-less": "~0.8.3"
+  },
+  "engines": {
+    "node": ">=0.8.0"
+  }
+}

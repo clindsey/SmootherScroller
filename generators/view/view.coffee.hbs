@@ -1,0 +1,8 @@
+moduleLibrary.define '{{#camelize}}{{name}}{{/camelize}}.View', gamecore.Pooled.extend '{{#camelize}}{{name}}{{/camelize}}View',
+    create: ->
+      {{name}}View = @_super()
+
+      {{name}}View
+  ,
+    dispose: ->
+      @release()
