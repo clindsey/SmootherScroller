@@ -8,20 +8,21 @@
   utils = moduleLibrary.get 'utils'
   config = moduleLibrary.get 'config'
 
-  app = {}
+  app =
+    onLoad: ->
+      app.canvasAdapterView = (moduleLibrary.get 'CanvasAdapter.View').create config.canvasAdapterOptions
 
-  utils.loadImages config.spriteSheetSource, ->
-    app.canvasAdapterView = (moduleLibrary.get 'CanvasAdapter.View').create config.canvasAdapterOptions
+      app.stageView = (moduleLibrary.get 'Stage.View').create app.canvasAdapterView.canvasEl, 'scenes/PlanetSurface', 'PlanetSurface.Scene'
 
-    app.stageView = (moduleLibrary.get 'Stage.View').create app.canvasAdapterView.canvasEl, 'scenes/PlanetSurface', 'PlanetSurface.Scene'
+      document.onkeydown = app.onKeyDown
 
-    document.onkeydown = app.onKeyDown
+    onKeyDown: (event) ->
+      EventBus.dispatch '!key:down', this, event
 
-  app.onKeyDown = (event) ->
-    EventBus.dispatch '!key:down', this, event
+    dispose: ->
+      document.onkeydown = undefined
+      @canvasAdapterView.dispose()
+      @stageView.dispose()
 
-  app.dispose = ->
-    document.onkeydown = undefined
-    @canvasAdapterView.dispose()
-    @stageView.dispose()
+  app.onLoad()
 )()

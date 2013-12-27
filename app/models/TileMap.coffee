@@ -14,7 +14,7 @@ moduleLibrary.define 'TileMap.Model', gamecore.Pooled.extend 'TileMapModel',
 
       tileMapModel
   ,
-    # returns a 2 dimensional array of sprite sheet indexes
+    # returns a 2 dimensional array of tile indexes
     getArea: (sliceWidth, sliceHeight, centerX, centerY) ->
       data = []
 
@@ -27,7 +27,7 @@ moduleLibrary.define 'TileMap.Model', gamecore.Pooled.extend 'TileMapModel',
           worldX = utils.clamp x - xOffset + centerX, config.worldTileWidth
           worldY = utils.clamp y - yOffset + centerY, config.worldTileHeight
 
-          data[y][x] = @tileSourceModel.getSpriteSheetIndex worldX, worldY
+          data[y][x] = @tileSourceModel.getCell worldX, worldY
 
       data
 

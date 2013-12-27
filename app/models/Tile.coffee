@@ -1,23 +1,23 @@
 moduleLibrary.define 'Tile.Model', gamecore.Pooled.extend 'TileModel',
-    create: (spriteSheetIndex, x, y) ->
+    create: (tileIndex, x, y) ->
       tileModel = @_super()
 
-      tileModel.spriteSheetIndex = spriteSheetIndex
+      tileModel.tileIndex = tileIndex
       tileModel.x = x
       tileModel.y = y
 
       tileModel
   ,
-    setSpriteSheetIndex: (newSpriteSheetIndex) ->
-      if @spriteSheetIndex isnt newSpriteSheetIndex
-        @spriteSheetIndex = newSpriteSheetIndex
+    setTileIndex: (newTileIndex) ->
+      if @tileIndex isnt newTileIndex
+        @tileIndex = newTileIndex
 
-        @onChangeSpriteSheetIndex()
+        @onChangeTileIndex()
 
     setIndexCallback: (newCallback) ->
-      @onChangeSpriteSheetIndex = newCallback
+      @onChangeTileIndex = newCallback
 
-    onChangeSpriteSheetIndex: ->
+    onChangeTileIndex: ->
       # meant to be overridden
 
     dispose: ->

@@ -60,7 +60,7 @@ moduleLibrary.define 'Viewport.View', gamecore.Pooled.extend 'ViewportView',
         for x in [0..tileMapData[y].length - 1]
           tileModel = @tileModels[x + tileMapData[y].length * y]
 
-          tileModel.setSpriteSheetIndex tileMapData[y][x]
+          tileModel.setTileIndex tileMapData[y][x]
 
     onKeyDown: (_event, args) ->
       x = @model.x

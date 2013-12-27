@@ -1,8 +1,12 @@
 moduleLibrary.define 'config',
   seed: 201312262319 #+new Date
 
-  worldTileWidth: 20
-  worldTileHeight: 20
+  generator:
+    location: 'generators/WorldGenerator'
+    name: 'WorldGenerator.Generator'
+
+  worldTileWidth: 200
+  worldTileHeight: 200
 
   tileWidth: 16
   tileHeight: 16
@@ -14,9 +18,3 @@ moduleLibrary.define 'config',
   viewportOptions:
     width: 20
     height: 20
-
-  spriteSheetSource: 'images/tileset_terra.png'
-
-  generator:
-    location: 'generators/WorldGenerator'
-    name: 'WorldGenerator.Generator'
