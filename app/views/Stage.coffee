@@ -8,18 +8,19 @@ moduleLibrary.define 'Stage.View', gamecore.Pooled.extend 'StageView',
 
       stageView.scene = (moduleLibrary.get sceneName).create()
 
+      stageView.el.addChild stageView.scene.el
+
       createjs.Ticker.setFPS 60
       createjs.Ticker.useRAF = true
 
-      stageView.el.addChild stageView.scene.el
+      _.bindAll stageView, 'onTick'
+      createjs.Ticker.addEventListener 'tick', stageView.onTick
 
       stageView.el.update()
 
-      EventBus.addEventListener '!key:down', stageView.onKeyDown, stageView
-
       stageView
   ,
-    onKeyDown: (event) ->
+    onTick: (event) ->
       @el.update()
 
     dispose: ->

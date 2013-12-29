@@ -21,6 +21,9 @@ moduleLibrary.define 'TileMap.Model', gamecore.Pooled.extend 'TileMapModel',
       xOffset = Math.floor sliceWidth / 2
       yOffset = Math.floor sliceHeight / 2
 
+      xOffset = 0
+      yOffset = 0
+
       for y in [0..sliceHeight - 1]
         data[y] = []
         for x in [0..sliceWidth - 1]

@@ -1,20 +1,29 @@
-moduleLibrary.define 'config',
-  seed: 201312262319 #+new Date
+config =
+  seed: 201312271939 #+new Date
+
+  maxElevation: 10
 
   generator:
     location: 'generators/WorldGenerator'
     name: 'WorldGenerator.Generator'
 
-  worldTileWidth: 200
-  worldTileHeight: 200
+  worldChunkWidth: 20
+  worldChunkHeight: 20
+
+  chunkTileWidth: 20
+  chunkTileHeight: 20
 
   tileWidth: 16
   tileHeight: 16
 
-  canvasAdapterOptions:
-    width: 320
-    height: 320
-
   viewportOptions:
     width: 20
     height: 20
+
+config.canvasAdapterOptions =
+  width: config.viewportOptions.width * config.tileWidth
+  height: config.viewportOptions.height * config.tileHeight
+config.worldTileWidth = config.worldChunkWidth * config.chunkTileWidth
+config.worldTileHeight = config.worldChunkHeight * config.chunkTileHeight
+
+moduleLibrary.define 'config', config
