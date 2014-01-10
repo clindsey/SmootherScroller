@@ -34,5 +34,8 @@ moduleLibrary.define 'TileMap.Model', gamecore.Pooled.extend 'TileMapModel',
 
       data
 
+    cacheAllTiles: ->
+      @tileSourceModel.cacheAllTiles()
+
     dispose: ->
       @release()

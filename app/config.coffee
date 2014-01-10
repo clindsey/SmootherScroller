@@ -1,5 +1,5 @@
 config =
-  seed: 201312271939 #+new Date
+  seed: 20140109 #+new Date
 
   maxElevation: 10
 
@@ -17,8 +17,8 @@ config =
   tileHeight: 16
 
   viewportOptions:
-    width: 20
-    height: 20
+    width: 32
+    height: 32
 
 config.canvasAdapterOptions =
   width: config.viewportOptions.width * config.tileWidth

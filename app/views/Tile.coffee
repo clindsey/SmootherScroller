@@ -31,7 +31,7 @@ moduleLibrary.define 'Tile.View', gamecore.Pooled.extend 'TileView',
         when tileIndex < 9 then '#148c69'
         else '#eaedf4'
 
-      @el.graphics.beginFill(color).drawRect 0, 0, config.tileWidth, config.tileHeight
+      @el.graphics.clear().beginFill(color).drawRect 0, 0, config.tileWidth, config.tileHeight
 
     indexToColor: (index) ->
       c = Math.floor (255 * index) / config.maxElevation

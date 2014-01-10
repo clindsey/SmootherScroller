@@ -16,8 +16,6 @@ moduleLibrary.define 'Stage.View', gamecore.Pooled.extend 'StageView',
       _.bindAll stageView, 'onTick'
       createjs.Ticker.addEventListener 'tick', stageView.onTick
 
-      stageView.el.update()
-
       stageView
   ,
     onTick: (event) ->

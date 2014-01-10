@@ -16,6 +16,8 @@ moduleLibrary.define 'PlanetSurface.Scene', gamecore.Pooled.extend 'PlanetSurfac
 
       planetSurfaceScene.models['TileMap.Model'] = (moduleLibrary.get 'TileMap.Model').create config.generator.location, config.generator.name
 
+      planetSurfaceScene.models['TileMap.Model'].cacheAllTiles()
+
       @createViewport planetSurfaceScene, planetSurfaceScene.models['TileMap.Model']
 
       planetSurfaceScene

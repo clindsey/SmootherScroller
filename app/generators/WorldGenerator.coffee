@@ -9,15 +9,21 @@ moduleLibrary.define 'WorldGenerator.Generator', class WorldGenerator
   chunkCache: []
 
   constructor: (@seed = config.seed) ->
-    @cacheAllTiles()
 
   cacheAllTiles: ->
     for y in [0..config.worldChunkHeight - 1]
       for x in [0..config.worldChunkWidth - 1]
-        @getCell x, y
+        chunk = @getChunk x, y
+
+        for cy in [0..chunk.length - 1]
+          for cx in [0..chunk[0].length - 1]
+            vx = x * config.chunkTileWidth + cx
+            vy = y * config.chunkTileHeight + cy
+
+            @getCell vx, vy
 
   getCell: (worldX, worldY) ->
-    if @tileCache[worldY] and @tileCache[worldY][worldX]
+    if @tileCache[worldY] and @tileCache[worldY][worldX]?
       return @tileCache[worldY][worldX]
 
     worldChunkX = Math.floor worldX / config.chunkTileWidth
@@ -28,6 +34,11 @@ moduleLibrary.define 'WorldGenerator.Generator', class WorldGenerator
     chunk = @getChunk worldChunkX, worldChunkY
 
     cell = chunk[chunkY][chunkX]
+
+    @tileCache[worldY] = [] unless @tileCache[worldY]?
+    @tileCache[worldY][worldX] = cell
+
+    cell
 
   getChunk: (worldChunkX, worldChunkY) ->
     nw = @chunkEdgeIndex worldChunkX, worldChunkY
@@ -42,14 +53,6 @@ moduleLibrary.define 'WorldGenerator.Generator', class WorldGenerator
     chunkTileHeight = config.chunkTileHeight
 
     chunkData = @bilinearInterpolate nw, ne, se, sw, chunkTileWidth, chunkTileHeight
-
-    for y in [0..chunkData.length - 1]
-      vy = y + worldChunkY * chunkTileHeight
-      @tileCache[vy] = [] unless @tileCache[vy]?
-
-      for x in [0..chunkData[y].length - 1]
-        vx = x + worldChunkX * chunkTileWidth
-        @tileCache[vy][vx] = chunkData[y][x]
 
     chunkData
 
