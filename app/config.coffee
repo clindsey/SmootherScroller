@@ -1,5 +1,5 @@
 config =
-  seed: 20140109 #+new Date
+  seed: +new Date
 
   maxElevation: 10
 
@@ -7,8 +7,8 @@ config =
     location: 'generators/WorldGenerator'
     name: 'WorldGenerator.Generator'
 
-  worldChunkWidth: 20
-  worldChunkHeight: 20
+  worldChunkWidth: 5
+  worldChunkHeight: 5
 
   chunkTileWidth: 20
   chunkTileHeight: 20
@@ -23,6 +23,7 @@ config =
 config.canvasAdapterOptions =
   width: config.viewportOptions.width * config.tileWidth
   height: config.viewportOptions.height * config.tileHeight
+
 config.worldTileWidth = config.worldChunkWidth * config.chunkTileWidth
 config.worldTileHeight = config.worldChunkHeight * config.chunkTileHeight
 
