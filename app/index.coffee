@@ -10,6 +10,9 @@
 
   app =
     onLoad: ->
+      utils.loadImages config.spriteSheetSource, app.onImagesLoad
+
+    onImagesLoad: ->
       app.canvasAdapterView = (moduleLibrary.get 'CanvasAdapter.View').create config.canvasAdapterOptions
 
       app.stageView = (moduleLibrary.get 'Stage.View').create app.canvasAdapterView.canvasEl, 'scenes/PlanetSurface', 'PlanetSurface.Scene'

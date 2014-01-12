@@ -1,6 +1,7 @@
 require 'models/Viewport'
 require 'models/TileMap'
 require 'config'
+require 'views/EntityManager'
 
 config = moduleLibrary.get 'config'
 
@@ -11,14 +12,24 @@ moduleLibrary.define 'PlanetSurface.Scene', gamecore.Pooled.extend 'PlanetSurfac
 
       planetSurfaceScene.el = new createjs.Container
 
+      planetSurfaceScene.lastUpdate = 0
+
       planetSurfaceScene.views = {}
       planetSurfaceScene.models = {}
 
-      planetSurfaceScene.models['TileMap.Model'] = (moduleLibrary.get 'TileMap.Model').create config.generator.location, config.generator.name
+      planetSurfaceScene.models['TileMap.Model'] = (moduleLibrary.get 'TileMap.Model').create config.generator.location, config.generator.name, config.generator.options
 
       planetSurfaceScene.models['TileMap.Model'].cacheAllTiles()
 
       @createViewport planetSurfaceScene, planetSurfaceScene.models['TileMap.Model']
+
+      planetSurfaceScene.views['EntityManager.View'] = (moduleLibrary.get 'EntityManager.View').create planetSurfaceScene.models['Viewport.Model']
+
+      planetSurfaceScene.el.addChild planetSurfaceScene.views['EntityManager.View'].el
+      planetSurfaceScene.views['EntityManager.View'].addCreatures 100, planetSurfaceScene.models['TileMap.Model']
+
+      _.bindAll planetSurfaceScene, 'onTick'
+      createjs.Ticker.addEventListener 'tick', planetSurfaceScene.onTick
 
       planetSurfaceScene
 
@@ -28,5 +39,16 @@ moduleLibrary.define 'PlanetSurface.Scene', gamecore.Pooled.extend 'PlanetSurfac
 
       planetSurfaceScene.el.addChild planetSurfaceScene.views['Viewport.View'].el
   ,
+    onTick: (event) ->
+      timeDelta = event.time - @lastUpdate
+
+      if Math.floor(timeDelta / 500) >= 1
+        @views['EntityManager.View'].onTick()
+
+        @lastUpdate = event.time
+
     dispose: ->
+      _.invoke planetSurfaceScene.views, 'dispose'
+      _.invoke planetSurfaceScene.models, 'dispose'
+
       @release()

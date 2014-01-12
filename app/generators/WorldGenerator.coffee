@@ -1,24 +1,22 @@
 require 'utils'
-require 'config'
 
 utils = moduleLibrary.get 'utils'
-config = moduleLibrary.get 'config'
 
 moduleLibrary.define 'WorldGenerator.Generator', class WorldGenerator
   tileCache: []
   chunkCache: []
 
-  constructor: (@seed = config.seed) ->
+  constructor: (@seed, @options) ->
 
   cacheAllTiles: ->
-    for y in [0..config.worldChunkHeight - 1]
-      for x in [0..config.worldChunkWidth - 1]
+    for y in [0..@options.worldChunkHeight - 1]
+      for x in [0..@options.worldChunkWidth - 1]
         chunk = @getChunk x, y
 
         for cy in [0..chunk.length - 1]
           for cx in [0..chunk[0].length - 1]
-            vx = x * config.chunkTileWidth + cx
-            vy = y * config.chunkTileHeight + cy
+            vx = x * @options.chunkTileWidth + cx
+            vy = y * @options.chunkTileHeight + cy
 
             @getCell vx, vy
 
@@ -26,14 +24,14 @@ moduleLibrary.define 'WorldGenerator.Generator', class WorldGenerator
     if @tileCache[worldY] and @tileCache[worldY][worldX]?
       return @tileCache[worldY][worldX]
 
-    worldChunkX = Math.floor worldX / config.chunkTileWidth
-    worldChunkY = Math.floor worldY / config.chunkTileHeight
-    chunkX = worldX % config.chunkTileWidth
-    chunkY = worldY % config.chunkTileHeight
+    worldChunkX = Math.floor worldX / @options.chunkTileWidth
+    worldChunkY = Math.floor worldY / @options.chunkTileHeight
+    chunkX = worldX % @options.chunkTileWidth
+    chunkY = worldY % @options.chunkTileHeight
 
     chunk = @getChunk worldChunkX, worldChunkY
 
-    cell = chunk[chunkY][chunkX]
+    cell = +(chunk[chunkY][chunkX] >= @options.waterCutoff)
 
     @tileCache[worldY] = [] unless @tileCache[worldY]?
     @tileCache[worldY][worldX] = cell
@@ -49,23 +47,22 @@ moduleLibrary.define 'WorldGenerator.Generator', class WorldGenerator
 
     se = @chunkEdgeIndex worldChunkX + 1, worldChunkY + 1
 
-    chunkTileWidth = config.chunkTileWidth
-    chunkTileHeight = config.chunkTileHeight
+    chunkTileWidth = @options.chunkTileWidth
+    chunkTileHeight = @options.chunkTileHeight
 
     chunkData = @bilinearInterpolate nw, ne, se, sw, chunkTileWidth, chunkTileHeight
 
     chunkData
 
   chunkEdgeIndex: (x, y) ->
-    width = config.worldChunkWidth
-    height = config.worldChunkHeight
-    maxElevation = config.maxElevation
+    width = @options.worldChunkWidth
+    height = @options.worldChunkHeight
     seed = @seed
 
-    x = utils.clamp x, width
-    y = utils.clamp y, height
+    x = @clamp x, width
+    y = @clamp y, height
 
-    utils.random(y * width + x + seed) * maxElevation
+    utils.random(y * width + x + seed)
 
   bilinearInterpolate: (nw, ne, se, sw, width, height) ->
     xLookup = []
@@ -84,6 +81,9 @@ moduleLibrary.define 'WorldGenerator.Generator', class WorldGenerator
         topHeight = nw + xStep * (ne - nw)
         bottomHeight = sw + xStep * (se - sw)
         cellHeight = topHeight + yStep * (bottomHeight - topHeight)
-        cells[y][x] = Math.floor cellHeight
+        cells[y][x] = cellHeight
 
     cells
+
+  clamp: (index, size) ->
+    (index + size) % size

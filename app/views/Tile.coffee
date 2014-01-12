@@ -10,26 +10,25 @@ moduleLibrary.define 'Tile.View', gamecore.Pooled.extend 'TileView',
 
       tileView.model = tileModel
 
-      tileView.el = new createjs.Shape()
-      tileView.setTileIndex()
+      tileView.el = new createjs.Bitmap utils.tilesetImg
 
       tileView.model.setIndexCallback ->
         tileView.setTileIndex()
+
+      tileView.setTileIndex()
 
       tileView
   ,
     setTileIndex: ->
       tileIndex = @model.tileIndex
 
-      color = switch
-        when tileIndex < 1 then '#5489ab'
-        when tileIndex < 3 then '#b7daf0'
-        when tileIndex < 5 then '#e5d08d'
-        when tileIndex < 7 then '#53b495'
-        when tileIndex < 9 then '#148c69'
-        else '#eaedf4'
+      x = (tileIndex % config.tileWidth)
+      y = Math.floor tileIndex / config.tileHeight
 
-      @el.graphics.clear().beginFill(color).drawRect 0, 0, config.tileWidth, config.tileHeight
+      tw = config.tileWidth
+      th = config.tileHeight
+
+      @el.sourceRect = new createjs.Rectangle x * tw, y * th, tw, th
 
     dispose: ->
       @release()

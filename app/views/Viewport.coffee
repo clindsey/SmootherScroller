@@ -66,15 +66,21 @@ moduleLibrary.define 'Viewport.View', gamecore.Pooled.extend 'ViewportView',
       x = @model.x
       y = @model.y
 
+      vx = 0
+      vy = 0
+
       switch args.keyCode
         when 37
-          x = @model.x - 1
+          vx = 0 - 1
         when 38
-          y = @model.y - 1
+          vy = 0 - 1
         when 39
-          x = @model.x + 1
+          vx = 1
         when 40
-          y = @model.y + 1
+          vy = 1
+
+      x = vx + @model.x
+      y = vy + @model.y
 
       x = utils.clamp x, config.worldTileWidth
       y = utils.clamp y, config.worldTileHeight
