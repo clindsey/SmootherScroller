@@ -26,6 +26,7 @@ moduleLibrary.define 'PlanetSurface.Scene', gamecore.Pooled.extend 'PlanetSurfac
       planetSurfaceScene.views['EntityManager.View'] = (moduleLibrary.get 'EntityManager.View').create planetSurfaceScene.models['Viewport.Model']
 
       planetSurfaceScene.el.addChild planetSurfaceScene.views['EntityManager.View'].el
+      planetSurfaceScene.views['EntityManager.View'].addPlants 100, planetSurfaceScene.models['TileMap.Model']
       planetSurfaceScene.views['EntityManager.View'].addCreatures 100, planetSurfaceScene.models['TileMap.Model']
 
       planetSurfaceScene.views['Minimap.View'] = (moduleLibrary.get 'Minimap.View').create planetSurfaceScene.models['TileMap.Model'], planetSurfaceScene.views['EntityManager.View']

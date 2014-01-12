@@ -46,7 +46,7 @@ moduleLibrary.define 'Minimap.View', gamecore.Pooled.extend 'MinimapView',
       minimapView.terrainEl.cache 0, 0, minimapWidth, minimapHeight
   ,
     buildEntityViews: ->
-      entityModels = @entityManagerView.creatureModels
+      entityModels = @entityManagerView.entityModels
 
       el = @entityEl
 
@@ -62,7 +62,7 @@ moduleLibrary.define 'Minimap.View', gamecore.Pooled.extend 'MinimapView',
         entityX = entityModel.x * tileWidth
         entityY = entityModel.y * tileHeight
 
-        el.graphics.beginFill('#ff0000').drawRect(entityX, entityY, tileWidth, tileHeight)
+        el.graphics.beginFill(entityModel.minimapColor).drawRect(entityX, entityY, tileWidth, tileHeight)
 
       el.cache 0, 0, minimapWidth, minimapHeight
 

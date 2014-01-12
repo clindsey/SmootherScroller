@@ -133,7 +133,7 @@ moduleLibrary.define 'Creature.View', gamecore.Pooled.extend 'CreatureView',
     dispose: ->
       @el.removeEventListener 'tick', @onTick
 
-      EventBus.removeEventListener "!move#{@mode.uniqueId}", @setPosition, this
+      EventBus.removeEventListener "!move#{@model.uniqueId}", @onModelMove, this
       EventBus.removeEventListener "!move:#{@viewportModel.uniqueId}", @setPosition, this
 
       @release()

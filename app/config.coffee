@@ -37,3 +37,6 @@ config.canvasAdapterOptions =
   height: config.viewportOptions.height * config.tileHeight
 
 moduleLibrary.define 'config', config
+
+console.log 'seed: ', config.seed
+console.log 'sessionSeed: ', config.sessionRandom

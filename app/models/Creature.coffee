@@ -13,6 +13,8 @@ moduleLibrary.define 'Creature.Model', gamecore.Pooled.extend 'CreatureModel',
       creatureModel.direction = 'South'
       creatureModel.tileMapModel = tileMapModel
 
+      creatureModel.minimapColor = '#880000'
+
       creatureModel
   ,
     setPosition: (x, y) ->

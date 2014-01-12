@@ -2,6 +2,8 @@ require 'config'
 require 'utils'
 require 'models/Creature'
 require 'views/Creature'
+require 'models/Plant'
+require 'views/Plant'
 
 config = moduleLibrary.get 'config'
 utils = moduleLibrary.get 'utils'
@@ -16,8 +18,8 @@ moduleLibrary.define 'EntityManager.View', gamecore.Pooled.extend 'EntityManager
 
       entityManagerView.lastUpdate = 0
 
-      entityManagerView.creatureViews = []
-      entityManagerView.creatureModels = []
+      entityManagerView.entityViews = []
+      entityManagerView.entityModels = []
 
       entityManagerView.viewportModel = viewportModel
 
@@ -29,33 +31,41 @@ moduleLibrary.define 'EntityManager.View', gamecore.Pooled.extend 'EntityManager
       # not happy with the way entities are being hidden when out of viewport bounds
 
       if Math.floor(timeDelta / 500) >= 1
-        _.each @creatureModels, (creatureModel) ->
-          creatureModel.tick()
+        _.each @entityModels, (entityModel) ->
+          entityModel.tick()
 
         @lastUpdate = event.time
 
-      _.each @creatureViews, (creatureView) ->
+      _.each @entityViews, (creatureView) ->
         if creatureView.el.x >= config.viewportOptions.width * config.tileWidth - config.tileWidth
           creatureView.el.visible = false
         else
           creatureView.el.visible = true
 
-    ###
-    addCreatures: (populationSize, tileMapModel) ->
-      creatureModel = (moduleLibrary.get 'Creature.Model').create 0, 10, tileMapModel
-      creatureView = (moduleLibrary.get 'Creature.View').create creatureModel, @viewportModel
+    addPlants: (populationSize, tileMapModel) ->
+      plantCount = 0
 
-      @el.addChild creatureView.el
-      @creatureViews.push creatureView
-      @creatureModels.push creatureModel
-    ###
+      while plantCount < populationSize
+        s = config.sessionRandom += 1
+        x = Math.floor utils.random(s) * config.worldTileWidth
+        y = Math.floor utils.random(s + 1) * config.worldTileHeight
+
+        tile = tileMapModel.getCell x, y
+
+        if tile is 1
+          plantCount += 1
+          plantModel = (moduleLibrary.get 'Plant.Model').create x, y, tileMapModel
+          plantView = (moduleLibrary.get 'Plant.View').create plantModel, @viewportModel
+
+          @el.addChild plantView.el
+          @entityViews.push plantView
+          @entityModels.push plantModel
 
     addCreatures: (populationSize, tileMapModel) ->
       creatureCount = 0
-      s = config.seed
 
       while creatureCount < populationSize
-        s += 1
+        s = config.sessionRandom += 1
         x = Math.floor utils.random(s) * config.worldTileWidth
         y = Math.floor utils.random(s + 1) * config.worldTileHeight
 
@@ -67,11 +77,11 @@ moduleLibrary.define 'EntityManager.View', gamecore.Pooled.extend 'EntityManager
           creatureView = (moduleLibrary.get 'Creature.View').create creatureModel, @viewportModel
 
           @el.addChild creatureView.el
-          @creatureViews.push creatureView
-          @creatureModels.push creatureModel
+          @entityViews.push creatureView
+          @entityModels.push creatureModel
 
     dispose: ->
-      _.each @creatureViews, (creatureView) ->
+      _.each @entityViews, (creatureView) ->
         creatureView.model.dispose()
         creatureView.dispose()
 
