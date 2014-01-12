@@ -25,11 +25,15 @@ config =
     width: 32
     height: 32
 
-config.canvasAdapterOptions =
-  width: config.viewportOptions.width * config.tileWidth
-  height: config.viewportOptions.height * config.tileHeight
+  minimapOptions:
+    tileWidth: 2
+    tileHeight: 2
 
 config.worldTileWidth = config.generator.options.worldChunkWidth * config.generator.options.chunkTileWidth
 config.worldTileHeight = config.generator.options.worldChunkHeight * config.generator.options.chunkTileHeight
+
+config.canvasAdapterOptions =
+  width: (config.viewportOptions.width * config.tileWidth) + (config.minimapOptions.tileWidth * config.worldTileWidth)
+  height: config.viewportOptions.height * config.tileHeight
 
 moduleLibrary.define 'config', config

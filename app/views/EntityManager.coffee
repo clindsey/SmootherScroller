@@ -6,11 +6,15 @@ require 'views/Creature'
 config = moduleLibrary.get 'config'
 utils = moduleLibrary.get 'utils'
 
+# there probably needs to be an entity manager model, to handle things like population change
+
 moduleLibrary.define 'EntityManager.View', gamecore.Pooled.extend 'EntityManagerView',
     create: (viewportModel) ->
       entityManagerView = @_super()
 
       entityManagerView.el = new createjs.Container
+
+      entityManagerView.lastUpdate = 0
 
       entityManagerView.creatureViews = []
       entityManagerView.creatureModels = []
@@ -19,9 +23,22 @@ moduleLibrary.define 'EntityManager.View', gamecore.Pooled.extend 'EntityManager
 
       entityManagerView
   ,
-    onTick: ->
-      _.each @creatureModels, (creatureModel) ->
-        creatureModel.tick()
+    onTick: (event) ->
+      timeDelta = event.time - @lastUpdate
+
+      # not happy with the way entities are being hidden when out of viewport bounds
+
+      if Math.floor(timeDelta / 500) >= 1
+        _.each @creatureModels, (creatureModel) ->
+          creatureModel.tick()
+
+        @lastUpdate = event.time
+
+      _.each @creatureViews, (creatureView) ->
+        if creatureView.el.x >= config.viewportOptions.width * config.tileWidth - config.tileWidth
+          creatureView.el.visible = false
+        else
+          creatureView.el.visible = true
 
     ###
     addCreatures: (populationSize, tileMapModel) ->

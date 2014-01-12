@@ -2,17 +2,17 @@ require 'models/Viewport'
 require 'models/TileMap'
 require 'config'
 require 'views/EntityManager'
+require 'views/Minimap'
 
 config = moduleLibrary.get 'config'
 
 # due for refactor. should attach views dynamically
+# the name for the models and views here is just stupid
 moduleLibrary.define 'PlanetSurface.Scene', gamecore.Pooled.extend 'PlanetSurfaceScene',
     create: ->
       planetSurfaceScene = @_super()
 
       planetSurfaceScene.el = new createjs.Container
-
-      planetSurfaceScene.lastUpdate = 0
 
       planetSurfaceScene.views = {}
       planetSurfaceScene.models = {}
@@ -28,6 +28,9 @@ moduleLibrary.define 'PlanetSurface.Scene', gamecore.Pooled.extend 'PlanetSurfac
       planetSurfaceScene.el.addChild planetSurfaceScene.views['EntityManager.View'].el
       planetSurfaceScene.views['EntityManager.View'].addCreatures 100, planetSurfaceScene.models['TileMap.Model']
 
+      planetSurfaceScene.views['Minimap.View'] = (moduleLibrary.get 'Minimap.View').create planetSurfaceScene.models['TileMap.Model'], planetSurfaceScene.views['EntityManager.View']
+      planetSurfaceScene.el.addChild planetSurfaceScene.views['Minimap.View'].el
+
       _.bindAll planetSurfaceScene, 'onTick'
       createjs.Ticker.addEventListener 'tick', planetSurfaceScene.onTick
 
@@ -40,12 +43,8 @@ moduleLibrary.define 'PlanetSurface.Scene', gamecore.Pooled.extend 'PlanetSurfac
       planetSurfaceScene.el.addChild planetSurfaceScene.views['Viewport.View'].el
   ,
     onTick: (event) ->
-      timeDelta = event.time - @lastUpdate
-
-      if Math.floor(timeDelta / 500) >= 1
-        @views['EntityManager.View'].onTick()
-
-        @lastUpdate = event.time
+      @views['EntityManager.View'].onTick event
+      @views['Minimap.View'].onTick event
 
     dispose: ->
       _.invoke planetSurfaceScene.views, 'dispose'
