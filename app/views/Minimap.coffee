@@ -3,8 +3,10 @@ require 'config'
 config = moduleLibrary.get 'config'
 
 moduleLibrary.define 'Minimap.View', gamecore.Pooled.extend 'MinimapView',
-    create: (tileMapModel, entityManagerView) ->
+    create: (tileMapModel, entityManagerView, viewportModel) ->
       minimapView = @_super()
+
+      minimapView.viewportModel = viewportModel
 
       minimapView.lastUpdate = 0
 
@@ -18,6 +20,10 @@ moduleLibrary.define 'Minimap.View', gamecore.Pooled.extend 'MinimapView',
       minimapView.entityManagerView = entityManagerView
       minimapView.entityEl = new createjs.Shape
       minimapView.el.addChild minimapView.entityEl
+
+      _.bindAll minimapView, 'onClick'
+
+      minimapView.el.addEventListener 'click', minimapView.onClick
 
       minimapView.buildEntityViews()
 
@@ -74,5 +80,13 @@ moduleLibrary.define 'Minimap.View', gamecore.Pooled.extend 'MinimapView',
 
         @lastUpdate = event.time
 
+    onClick: (event) ->
+      x = Math.floor (event.stageX - @el.x) / config.minimapOptions.tileWidth
+      y = Math.floor (event.stageY - @el.y) / config.minimapOptions.tileHeight
+
+      @viewportModel.setPosition x, y
+
     dispose: ->
+      @el.removeEventListener 'click', @onClick
+
       @release()

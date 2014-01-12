@@ -29,7 +29,7 @@ moduleLibrary.define 'PlanetSurface.Scene', gamecore.Pooled.extend 'PlanetSurfac
       planetSurfaceScene.views['EntityManager.View'].addPlants 100, planetSurfaceScene.models['TileMap.Model']
       planetSurfaceScene.views['EntityManager.View'].addCreatures 100, planetSurfaceScene.models['TileMap.Model']
 
-      planetSurfaceScene.views['Minimap.View'] = (moduleLibrary.get 'Minimap.View').create planetSurfaceScene.models['TileMap.Model'], planetSurfaceScene.views['EntityManager.View']
+      planetSurfaceScene.views['Minimap.View'] = (moduleLibrary.get 'Minimap.View').create planetSurfaceScene.models['TileMap.Model'], planetSurfaceScene.views['EntityManager.View'], planetSurfaceScene.models['Viewport.Model']
       planetSurfaceScene.el.addChild planetSurfaceScene.views['Minimap.View'].el
 
       _.bindAll planetSurfaceScene, 'onTick'
@@ -38,7 +38,10 @@ moduleLibrary.define 'PlanetSurface.Scene', gamecore.Pooled.extend 'PlanetSurfac
       planetSurfaceScene
 
     createViewport: (planetSurfaceScene, tileMapModel) ->
-      planetSurfaceScene.models['Viewport.Model'] = (moduleLibrary.get 'Viewport.Model').create 0, 0, config.viewportOptions.width, config.viewportOptions.height
+      viewportX = Math.floor config.worldTileWidth / 2
+      viewportY = Math.floor config.worldTileHeight / 2
+
+      planetSurfaceScene.models['Viewport.Model'] = (moduleLibrary.get 'Viewport.Model').create viewportX, viewportY, config.viewportOptions.width, config.viewportOptions.height
       planetSurfaceScene.views['Viewport.View'] = (moduleLibrary.get 'Viewport.View').create planetSurfaceScene.models['Viewport.Model'], tileMapModel
 
       planetSurfaceScene.el.addChild planetSurfaceScene.views['Viewport.View'].el
