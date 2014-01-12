@@ -1,6 +1,6 @@
 config =
-  seed: 20140111 # +new Date
-  sessionRandom: 20140111
+  seed: +new Date
+  sessionRandom: +new Date
 
   fps: 20
 
@@ -12,8 +12,8 @@ config =
     options:
       waterCutoff: 0.5
       # world size
-      worldChunkWidth: 5
-      worldChunkHeight: 5
+      worldChunkWidth: 10
+      worldChunkHeight: 10
       # zoom level
       chunkTileWidth: 10
       chunkTileHeight: 10
