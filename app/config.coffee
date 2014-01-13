@@ -12,11 +12,11 @@ config =
     options:
       waterCutoff: 0.5
       # world size
-      worldChunkWidth: 10
-      worldChunkHeight: 10
+      worldChunkWidth: 7
+      worldChunkHeight: 7
       # zoom level
-      chunkTileWidth: 10
-      chunkTileHeight: 10
+      chunkTileWidth: 13
+      chunkTileHeight: 13
 
   tileWidth: 16
   tileHeight: 16

@@ -21,11 +21,17 @@ moduleLibrary.define 'Minimap.View', gamecore.Pooled.extend 'MinimapView',
       minimapView.entityEl = new createjs.Shape
       minimapView.el.addChild minimapView.entityEl
 
+      minimapView.overlayEl = new createjs.Shape
+      minimapView.el.addChild minimapView.overlayEl
+
       _.bindAll minimapView, 'onClick'
 
       minimapView.el.addEventListener 'click', minimapView.onClick
 
       minimapView.buildEntityViews()
+      minimapView.drawOverlayView minimapView
+
+      EventBus.addEventListener "!move:#{viewportModel.uniqueId}", minimapView.drawOverlayView, minimapView
 
       minimapView
 
@@ -71,6 +77,38 @@ moduleLibrary.define 'Minimap.View', gamecore.Pooled.extend 'MinimapView',
         el.graphics.beginFill(entityModel.minimapColor).drawRect(entityX, entityY, tileWidth, tileHeight)
 
       el.cache 0, 0, minimapWidth, minimapHeight
+
+    drawOverlayView: ->
+      el = @overlayEl
+
+      width = config.viewportOptions.width * config.minimapOptions.tileWidth
+      height = config.viewportOptions.height * config.minimapOptions.tileHeight
+
+      halfWidth = Math.floor width / 2
+      halfHeight = Math.floor height / 2
+
+      x = (@viewportModel.x * config.minimapOptions.tileWidth) - halfWidth
+      y = (@viewportModel.y * config.minimapOptions.tileHeight) - halfHeight
+
+      w = config.worldTileWidth * config.minimapOptions.tileWidth
+      h = config.worldTileHeight * config.minimapOptions.tileHeight
+
+      g = el.graphics
+      g.clear()
+      g.setStrokeStyle(2, 'square')
+      g.beginStroke('rgba(136, 0, 0, 0.5)')
+
+      g.drawRect x, y, width, height # center
+      g.drawRect x - w, y, width, height # west
+      g.drawRect x - w, y - h, width, height # north west
+      g.drawRect x + w, y, width, height # east
+      g.drawRect x + w, y - h, width, height # north east
+      g.drawRect x + w, y + h, width, height # south east
+      g.drawRect x - w, y + h, width, height # south west
+      g.drawRect x, y + h, width, height # south
+      g.drawRect x, y - h, width, height # north
+
+      el.cache 0, 0, w, h
 
     onTick: (event) ->
       timeDelta = event.time - @lastUpdate
