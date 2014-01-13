@@ -23,6 +23,10 @@ moduleLibrary.define 'Viewport.View', gamecore.Pooled.extend 'ViewportView',
 
       EventBus.addEventListener "!move:#{viewportView.model.uniqueId}", viewportView.drawMap, viewportView
 
+      _.bindAll viewportView, 'onClick'
+
+      viewportView.el.addEventListener 'click', viewportView.onClick
+
       viewportView
 
     buildTileModels: (viewportView) ->
@@ -86,6 +90,18 @@ moduleLibrary.define 'Viewport.View', gamecore.Pooled.extend 'ViewportView',
       y = utils.clamp y, config.worldTileHeight
 
       @model.setPosition x, y
+
+    onClick: (event) ->
+      x = Math.floor (event.stageX - @el.x) / config.tileWidth
+      y = Math.floor (event.stageY - @el.y) / config.tileHeight
+
+      halfWidth = Math.floor config.viewportOptions.width / 2
+      halfHeight = Math.floor config.viewportOptions.height / 2
+
+      newX = @model.x + (x - halfWidth)
+      newY = @model.y + (y - halfHeight)
+
+      @model.setPosition newX, newY
 
     dispose: ->
       _.invoke @tileModels, 'dispose'
