@@ -41,22 +41,22 @@ moduleLibrary.define 'Creature.View', gamecore.Pooled.extend 'CreatureView',
         width: config.tileWidth
         height: config.tileHeight
       animations:
-        walkEast:
+        walkEastBlue:
           frames: [288, 289, 290, 291]
-        walkNorth:
+        walkNorthBlue:
           frames: [292, 293, 294, 295]
-        walkWest:
+        walkWestBlue:
           frames: [296, 297, 298, 299]
-        walkSouth:
+        walkSouthBlue:
           frames: [300, 301, 302, 303]
-        idleEast:
-          frames: [320, 321]
-        idleNorth:
-          frames: [322, 323]
-        idleWest:
-          frames: [324, 325]
-        idleSouth:
-          frames: [326, 327]
+        walkEastOrange:
+          frames: [304, 305, 306, 307]
+        walkNorthOrange:
+          frames: [308, 309, 310, 311]
+        walkWestOrange:
+          frames: [312, 313, 314, 315]
+        walkSouthOrange:
+          frames: [316, 317, 318, 319]
   ,
     onModelMove: ->
       dX = 0
@@ -80,7 +80,7 @@ moduleLibrary.define 'Creature.View', gamecore.Pooled.extend 'CreatureView',
       @setPosition()
 
     setPosition: ->
-      animation = "walk#{@model.direction}"
+      animation = "walk#{@model.direction}#{@model.color}"
 
       @el.gotoAndPlay animation unless @el.currentAnimation is animation
 

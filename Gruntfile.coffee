@@ -27,6 +27,7 @@ module.exports = (grunt) ->
             'vendor/javascripts/rng.js'
             'vendor/javascripts/easel.js'
             'vendor/javascripts/tween.js'
+            'vendor/javascripts/astar.js'
           ]
           'public/test/unit/javascripts/unit-tests-vendor.js': [
             'test/unit/vendor/javascripts/mocha.js'

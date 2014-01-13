@@ -33,6 +33,19 @@ moduleLibrary.define 'TileMap.Model', gamecore.Pooled.extend 'TileMapModel',
 
       data
 
+    getPathfindingArea: (sliceWidth, sliceHeight, centerX, centerY) ->
+      tileGrid = @getArea sliceWidth, sliceHeight, centerX, centerY
+
+      data = []
+
+      for tileGridRow, y in tileGrid
+        data[y] = []
+
+        for tileGridItem, x in tileGridRow
+          data[y][x] = +!(tileGridItem is 0)
+
+      data
+
     getCell: (worldX, worldY) ->
       @tileSourceModel.getCell worldX, worldY
 

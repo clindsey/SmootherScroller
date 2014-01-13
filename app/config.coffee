@@ -38,5 +38,5 @@ config.canvasAdapterOptions =
 
 moduleLibrary.define 'config', config
 
-console.log 'seed: ', config.seed
-console.log 'sessionSeed: ', config.sessionRandom
+console.log 'seed:', config.seed
+console.log 'sessionSeed:', config.sessionRandom

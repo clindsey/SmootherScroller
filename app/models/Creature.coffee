@@ -5,12 +5,13 @@ utils = moduleLibrary.get 'utils'
 config = moduleLibrary.get 'config'
 
 moduleLibrary.define 'Creature.Model', gamecore.Pooled.extend 'CreatureModel',
-    create: (x, y, tileMapModel) ->
+    create: (x, y, color, tileMapModel) ->
       creatureModel = @_super()
 
       creatureModel.x = x
       creatureModel.y = y
       creatureModel.direction = 'South'
+      creatureModel.color = color
       creatureModel.tileMapModel = tileMapModel
 
       creatureModel.minimapColor = '#880000'
