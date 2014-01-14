@@ -14,6 +14,8 @@ moduleLibrary.define 'Creature.Model', gamecore.Pooled.extend 'CreatureModel',
       creatureModel.color = color
       creatureModel.tileMapModel = tileMapModel
 
+      creatureModel.moving = false
+
       creatureModel.minimapColor = '#880000'
 
       creatureModel
@@ -26,6 +28,12 @@ moduleLibrary.define 'Creature.Model', gamecore.Pooled.extend 'CreatureModel',
         EventBus.dispatch "!move:#{@uniqueId}"
 
     tick: ->
+      unless @moving
+        @getPath()
+      else
+        @followPath()
+
+    getPath: ->
       fountSpot = false
       giveUpCounter = 6
 
@@ -33,36 +41,53 @@ moduleLibrary.define 'Creature.Model', gamecore.Pooled.extend 'CreatureModel',
         dX = 0
         dY = 0
 
-        runOrRise = Math.floor(utils.sessionRandom() * 2) % 2
-
-        if runOrRise
-          dX = Math.floor(utils.sessionRandom() * 3) - 1
-        else
-          dY = Math.floor(utils.sessionRandom() * 3) - 1
+        dX = Math.floor(utils.sessionRandom() * 20) - 10
+        dY = Math.floor(utils.sessionRandom() * 20) - 10
 
         newX = utils.clamp @x + dX, config.worldTileWidth
         newY = utils.clamp @y + dY, config.worldTileHeight
 
-        tile = @tileMapModel.getCell newX, newY
+        path = @tileMapModel.findPath @x, @y, newX, newY, 10, 10
 
-        newDirection = 'South'
-
-        if dX > 0
-          @direction = 'East'
-        if dX < 0
-          @direction = 'West'
-
-        if dY > 0
-          @direction = 'South'
-        if dY < 0
-          @direction = 'North'
-
-        if tile is 1 and (newX isnt @x or newY isnt @y)
-          @setPosition newX, newY
+        if path.length
+          @path = path
 
           foundSpot = true
+
+          @moving = true
         else
           giveUpCounter -= 1
+
+    followPath: ->
+      path = @path
+
+      nearRoad = path.shift()
+
+      @path = path
+
+      @moving = false unless @path.length
+
+      return unless nearRoad? and !!nearRoad.length
+
+      dX = nearRoad[0]
+      dY = nearRoad[1]
+
+      newX = utils.clamp @x + dX, config.worldTileWidth
+      newY = utils.clamp @y + dY, config.worldTileHeight
+
+      newDirection = 'South'
+
+      if dX > 0
+        @direction = 'East'
+      if dX < 0
+        @direction = 'West'
+
+      if dY > 0
+        @direction = 'South'
+      if dY < 0
+        @direction = 'North'
+
+      @setPosition newX, newY
 
     dispose: ->
       @release()

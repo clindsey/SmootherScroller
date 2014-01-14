@@ -33,6 +33,39 @@ moduleLibrary.define 'TileMap.Model', gamecore.Pooled.extend 'TileMapModel',
 
       data
 
+    findPath: (startX, startY, endX, endY, sliceWidth, sliceHeight) ->
+      grid = @getPathfindingArea sliceWidth, sliceHeight, startX, startY
+
+      worldHalfWidth = Math.ceil sliceWidth / 2
+      worldHalfHeight = Math.ceil sliceHeight / 2
+
+      deltaX = startX - worldHalfWidth
+      deltaY = startY - worldHalfHeight
+
+      targetX = utils.clamp endX - deltaX, config.worldTileWidth
+      targetY = utils.clamp endY - deltaY, config.worldTileHeight
+
+      start = [worldHalfWidth, worldHalfHeight]
+      end = [targetX, targetY]
+
+      path = AStar grid, start, end
+
+      if path.length is 0
+        return []
+
+      pathOut = []
+
+      for pathStep, index in path
+        if index is 0
+          continue
+        else
+          lastStep = path[index - 1]
+          pathOut.push [pathStep[0] - lastStep[0], pathStep[1] - lastStep[1]]
+
+      pathOut.push [0, 0]
+
+      pathOut
+
     getPathfindingArea: (sliceWidth, sliceHeight, centerX, centerY) ->
       tileGrid = @getArea sliceWidth, sliceHeight, centerX, centerY
 
@@ -42,7 +75,7 @@ moduleLibrary.define 'TileMap.Model', gamecore.Pooled.extend 'TileMapModel',
         data[y] = []
 
         for tileGridItem, x in tileGridRow
-          data[y][x] = +!(tileGridItem is 0)
+          data[y][x] = +(tileGridItem is 0)
 
       data
 
