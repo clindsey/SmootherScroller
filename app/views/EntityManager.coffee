@@ -36,16 +36,7 @@ moduleLibrary.define 'EntityManager.View', gamecore.Pooled.extend 'EntityManager
 
         @lastUpdate = event.time
 
-      # not happy with the way entities are being hidden when out of viewport bounds
-      ###
-      _.each @entityViews, (creatureView) ->
-        if creatureView.el.x >= config.viewportOptions.width * config.tileWidth - config.tileWidth
-          creatureView.el.visible = false
-        else
-          creatureView.el.visible = true
-      ###
-
-    addBuildings: (populationSize, tileMapModel) ->
+    addVillage: (populationSize, tileMapModel) ->
       buildingCount = 0
 
       while buildingCount < populationSize
@@ -65,32 +56,15 @@ moduleLibrary.define 'EntityManager.View', gamecore.Pooled.extend 'EntityManager
           @entityViews.push buildingView
           @entityModels.push buildingModel
 
-    addPlants: (populationSize, tileMapModel) ->
-      plantCount = 0
+          @addCreatures 3, tileMapModel, buildingModel
 
-      while plantCount < populationSize
-        s = config.sessionRandom += 1
-        x = Math.floor utils.random(s) * config.worldTileWidth
-        y = Math.floor utils.random(s + 1) * config.worldTileHeight
-
-        tile = tileMapModel.getCell x, y
-
-        if tile is 1
-          plantCount += 1
-          plantModel = (moduleLibrary.get 'Plant.Model').create x, y
-          plantView = (moduleLibrary.get 'Plant.View').create plantModel, @viewportModel
-
-          @el.addChild plantView.el
-          @entityViews.push plantView
-          @entityModels.push plantModel
-
-    addCreatures: (populationSize, tileMapModel) ->
+    addCreatures: (populationSize, tileMapModel, buildingModel) ->
       creatureCount = 0
 
       while creatureCount < populationSize
         s = config.sessionRandom += 1
-        x = Math.floor utils.random(s) * config.worldTileWidth
-        y = Math.floor utils.random(s + 1) * config.worldTileHeight
+        x = buildingModel.x
+        y = buildingModel.y
         color = if Math.floor(utils.random(s + 2) * 2) % 2 then 'Orange' else 'Blue'
 
         tile = tileMapModel.getCell x, y
@@ -103,6 +77,27 @@ moduleLibrary.define 'EntityManager.View', gamecore.Pooled.extend 'EntityManager
           @el.addChild creatureView.el
           @entityViews.push creatureView
           @entityModels.push creatureModel
+
+          @addPlants 3, tileMapModel, creatureModel
+
+    addPlants: (populationSize, tileMapModel, creatureModel) ->
+      plantCount = 0
+
+      while plantCount < populationSize
+        s = config.sessionRandom += 1
+        x = utils.clamp Math.floor(creatureModel.x + ((utils.random(s) * 20) - 10)), config.worldTileWidth
+        y = utils.clamp Math.floor(creatureModel.y + ((utils.random(s += 1) * 20) - 10)), config.worldTileHeight
+
+        tile = tileMapModel.getCell x, y
+
+        if tile is 1
+          plantCount += 1
+          plantModel = (moduleLibrary.get 'Plant.Model').create x, y
+          plantView = (moduleLibrary.get 'Plant.View').create plantModel, @viewportModel
+
+          @el.addChild plantView.el
+          @entityViews.push plantView
+          @entityModels.push plantModel
 
     dispose: ->
       _.each @entityViews, (creatureView) ->

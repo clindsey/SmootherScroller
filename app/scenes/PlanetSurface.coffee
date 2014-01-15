@@ -26,9 +26,10 @@ moduleLibrary.define 'PlanetSurface.Scene', gamecore.Pooled.extend 'PlanetSurfac
       planetSurfaceScene.views['EntityManager.View'] = (moduleLibrary.get 'EntityManager.View').create planetSurfaceScene.models['Viewport.Model']
 
       planetSurfaceScene.el.addChild planetSurfaceScene.views['EntityManager.View'].el
-      planetSurfaceScene.views['EntityManager.View'].addPlants 60, planetSurfaceScene.models['TileMap.Model']
-      planetSurfaceScene.views['EntityManager.View'].addCreatures 20, planetSurfaceScene.models['TileMap.Model']
-      planetSurfaceScene.views['EntityManager.View'].addBuildings 20, planetSurfaceScene.models['TileMap.Model']
+      planetSurfaceScene.views['EntityManager.View'].addVillage 5, planetSurfaceScene.models['TileMap.Model']
+      #planetSurfaceScene.views['EntityManager.View'].addPlants 60, planetSurfaceScene.models['TileMap.Model']
+      #planetSurfaceScene.views['EntityManager.View'].addCreatures 20, planetSurfaceScene.models['TileMap.Model']
+      #planetSurfaceScene.views['EntityManager.View'].addBuildings 20, planetSurfaceScene.models['TileMap.Model']
 
       planetSurfaceScene.views['Minimap.View'] = (moduleLibrary.get 'Minimap.View').create planetSurfaceScene.models['TileMap.Model'], planetSurfaceScene.views['EntityManager.View'], planetSurfaceScene.models['Viewport.Model']
       planetSurfaceScene.el.addChild planetSurfaceScene.views['Minimap.View'].el
