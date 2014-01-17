@@ -5,7 +5,7 @@ utils = moduleLibrary.get 'utils'
 config = moduleLibrary.get 'config'
 
 moduleLibrary.define 'Creature.Model', gamecore.Pooled.extend 'CreatureModel',
-    create: (x, y, color, tileMapModel) ->
+    create: (x, y, color, tileMapModel, buildingModel, plantModels) ->
       creatureModel = @_super()
 
       creatureModel.x = x
@@ -13,12 +13,47 @@ moduleLibrary.define 'Creature.Model', gamecore.Pooled.extend 'CreatureModel',
       creatureModel.direction = 'South'
       creatureModel.color = color
       creatureModel.tileMapModel = tileMapModel
+      creatureModel.buildingModel = buildingModel
+      creatureModel.plantModels = plantModels
+      creatureModel.plantIndex = 0
 
       creatureModel.moving = false
 
       creatureModel.minimapColor = '#880000'
 
+      creatureModel.stateMachine = @stateMachine creatureModel
+
       creatureModel
+
+    stateMachine: (creatureModel) ->
+      StateMachine.create
+        initial: 'working'
+        events: [
+          {
+            name: 'rest'
+            from: 'nexting'
+            to: 'working'
+          }
+          {
+            name: 'work'
+            from: ['resting', 'nexting']
+            to: 'nexting'
+          }
+          {
+            name: 'next'
+            from: 'working'
+            to: 'resting'
+          }
+        ]
+        callbacks:
+          onrest: (event, from, to, msg) ->
+            creatureModel.path = creatureModel.getPath creatureModel.plantModels[creatureModel.plantIndex]
+
+          onwork: (event, from, to, msg) ->
+            creatureModel.path = creatureModel.getPath creatureModel.buildingModel
+
+          onnext: (event, from, to, msg) ->
+            creatureModel.plantIndex += 1
   ,
     setPosition: (x, y) ->
       if y isnt @y or x isnt @x
@@ -28,35 +63,26 @@ moduleLibrary.define 'Creature.Model', gamecore.Pooled.extend 'CreatureModel',
         EventBus.dispatch "!move:#{@uniqueId}"
 
     tick: ->
-      unless @moving
-        @getPath()
-      else
+      if @moving
         @followPath()
+      else
+        switch @stateMachine.current
+          when 'working'
+            @stateMachine.next()
+          when 'nexting'
+            if @plantIndex > @plantModels.length - 1
+              @plantIndex = 0
 
-    getPath: ->
-      fountSpot = false
-      giveUpCounter = 6
+            @stateMachine.rest()
+          when 'resting'
+            @stateMachine.work()
 
-      while !foundSpot and giveUpCounter
-        dX = 0
-        dY = 0
+    getPath: (targetModel) ->
+      path = @tileMapModel.findPath @x, @y, targetModel.x, targetModel.y, 20, 20
 
-        dX = Math.floor(utils.sessionRandom() * 20) - 10
-        dY = Math.floor(utils.sessionRandom() * 20) - 10
+      @moving = true
 
-        newX = utils.clamp @x + dX, config.worldTileWidth
-        newY = utils.clamp @y + dY, config.worldTileHeight
-
-        path = @tileMapModel.findPath @x, @y, newX, newY, 10, 10
-
-        if path.length
-          @path = path
-
-          foundSpot = true
-
-          @moving = true
-        else
-          giveUpCounter -= 1
+      path
 
     followPath: ->
       path = @path
@@ -65,7 +91,8 @@ moduleLibrary.define 'Creature.Model', gamecore.Pooled.extend 'CreatureModel',
 
       @path = path
 
-      @moving = false unless @path.length
+      unless @path.length
+        @moving = false
 
       return unless nearRoad? and !!nearRoad.length
 

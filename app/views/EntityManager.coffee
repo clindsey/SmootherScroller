@@ -23,6 +23,8 @@ moduleLibrary.define 'EntityManager.View', gamecore.Pooled.extend 'EntityManager
       entityManagerView.entityViews = []
       entityManagerView.entityModels = []
 
+      entityManagerView.permanentsLookup = {}
+
       entityManagerView.viewportModel = viewportModel
 
       entityManagerView
@@ -47,7 +49,7 @@ moduleLibrary.define 'EntityManager.View', gamecore.Pooled.extend 'EntityManager
 
         tile = tileMapModel.getCell x, y
 
-        if tile is 1
+        if tile is 1 and @permanentsLookup["#{x}_#{y}"] isnt true
           buildingCount += 1
           buildingModel = (moduleLibrary.get 'Building.Model').create x, y, color
           buildingView = (moduleLibrary.get 'Building.View').create buildingModel, @viewportModel
@@ -56,9 +58,12 @@ moduleLibrary.define 'EntityManager.View', gamecore.Pooled.extend 'EntityManager
           @entityViews.push buildingView
           @entityModels.push buildingModel
 
-          @addCreatures 3, tileMapModel, buildingModel
+          @permanentsLookup["#{x}_#{y}"] = true
 
-    addCreatures: (populationSize, tileMapModel, buildingModel) ->
+          plantModels = @addPlants 3, tileMapModel, buildingModel
+          @addCreatures 1, tileMapModel, buildingModel, plantModels
+
+    addCreatures: (populationSize, tileMapModel, buildingModel, plantModels) ->
       creatureCount = 0
 
       while creatureCount < populationSize
@@ -71,26 +76,26 @@ moduleLibrary.define 'EntityManager.View', gamecore.Pooled.extend 'EntityManager
 
         if tile is 1
           creatureCount += 1
-          creatureModel = (moduleLibrary.get 'Creature.Model').create x, y, color, tileMapModel
+          creatureModel = (moduleLibrary.get 'Creature.Model').create x, y, color, tileMapModel, buildingModel, plantModels
           creatureView = (moduleLibrary.get 'Creature.View').create creatureModel, @viewportModel
 
           @el.addChild creatureView.el
           @entityViews.push creatureView
           @entityModels.push creatureModel
 
-          @addPlants 3, tileMapModel, creatureModel
-
-    addPlants: (populationSize, tileMapModel, creatureModel) ->
+    addPlants: (populationSize, tileMapModel, buildingModel) ->
       plantCount = 0
+
+      plantModels = []
 
       while plantCount < populationSize
         s = config.sessionRandom += 1
-        x = utils.clamp Math.floor(creatureModel.x + ((utils.random(s) * 20) - 10)), config.worldTileWidth
-        y = utils.clamp Math.floor(creatureModel.y + ((utils.random(s += 1) * 20) - 10)), config.worldTileHeight
+        x = utils.clamp Math.floor(buildingModel.x + ((utils.random(s) * 20) - 10)), config.worldTileWidth
+        y = utils.clamp Math.floor(buildingModel.y + ((utils.random(s += 1) * 20) - 10)), config.worldTileHeight
 
         tile = tileMapModel.getCell x, y
 
-        if tile is 1
+        if tile is 1 and @permanentsLookup["#{x}_#{y}"] isnt true
           plantCount += 1
           plantModel = (moduleLibrary.get 'Plant.Model').create x, y
           plantView = (moduleLibrary.get 'Plant.View').create plantModel, @viewportModel
@@ -98,6 +103,12 @@ moduleLibrary.define 'EntityManager.View', gamecore.Pooled.extend 'EntityManager
           @el.addChild plantView.el
           @entityViews.push plantView
           @entityModels.push plantModel
+
+          @permanentsLookup["#{x}_#{y}"] = true
+
+          plantModels.push plantModel
+
+      plantModels
 
     dispose: ->
       _.each @entityViews, (creatureView) ->
