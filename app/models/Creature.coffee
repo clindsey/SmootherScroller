@@ -27,33 +27,33 @@ moduleLibrary.define 'Creature.Model', gamecore.Pooled.extend 'CreatureModel',
 
     stateMachine: (creatureModel) ->
       StateMachine.create
-        initial: 'working'
+        initial: 'resting'
         events: [
-          {
-            name: 'rest'
-            from: 'nexting'
-            to: 'working'
-          }
-          {
             name: 'work'
-            from: ['resting', 'nexting']
-            to: 'nexting'
-          }
-          {
-            name: 'next'
+            from: 'resting'
+            to: 'working'
+          ,
+            name: 'work'
+            from: 'working'
+            to: 'working'
+          ,
+            name: 'rest'
             from: 'working'
             to: 'resting'
-          }
         ]
         callbacks:
-          onrest: (event, from, to, msg) ->
+          onrest: ->
             creatureModel.path = creatureModel.getPath creatureModel.plantModels[creatureModel.plantIndex]
 
-          onwork: (event, from, to, msg) ->
-            creatureModel.path = creatureModel.getPath creatureModel.buildingModel
+          onwork: ->
+            creatureModel.path = creatureModel.getPath creatureModel.plantModels[creatureModel.plantIndex]
 
-          onnext: (event, from, to, msg) ->
             creatureModel.plantIndex += 1
+
+            if creatureModel.plantIndex > creatureModel.plantModels.length - 1
+              creatureModel.plantIndex = 0
+
+              creatureModel.path = creatureModel.getPath creatureModel.buildingModel
   ,
     setPosition: (x, y) ->
       if y isnt @y or x isnt @x
@@ -68,17 +68,12 @@ moduleLibrary.define 'Creature.Model', gamecore.Pooled.extend 'CreatureModel',
       else
         switch @stateMachine.current
           when 'working'
-            @stateMachine.next()
-          when 'nexting'
-            if @plantIndex > @plantModels.length - 1
-              @plantIndex = 0
-
             @stateMachine.rest()
           when 'resting'
             @stateMachine.work()
 
     getPath: (targetModel) ->
-      path = @tileMapModel.findPath @x, @y, targetModel.x, targetModel.y, 20, 20
+      path = @tileMapModel.findPath @x, @y, targetModel.x, targetModel.y, 60, 60
 
       @moving = true
 

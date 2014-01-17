@@ -6,6 +6,8 @@ require 'views/Minimap'
 
 config = moduleLibrary.get 'config'
 
+VILLAGE_COUNT = 20
+
 # due for refactor. should attach views dynamically
 # the name for the models and views here is just stupid
 moduleLibrary.define 'PlanetSurface.Scene', gamecore.Pooled.extend 'PlanetSurfaceScene',
@@ -26,7 +28,7 @@ moduleLibrary.define 'PlanetSurface.Scene', gamecore.Pooled.extend 'PlanetSurfac
       planetSurfaceScene.views['EntityManager.View'] = (moduleLibrary.get 'EntityManager.View').create planetSurfaceScene.models['Viewport.Model']
 
       planetSurfaceScene.el.addChild planetSurfaceScene.views['EntityManager.View'].el
-      planetSurfaceScene.views['EntityManager.View'].addVillage 10, planetSurfaceScene.models['TileMap.Model']
+      planetSurfaceScene.views['EntityManager.View'].addVillage VILLAGE_COUNT, planetSurfaceScene.models['TileMap.Model']
 
       planetSurfaceScene.views['Minimap.View'] = (moduleLibrary.get 'Minimap.View').create planetSurfaceScene.models['TileMap.Model'], planetSurfaceScene.views['EntityManager.View'], planetSurfaceScene.models['Viewport.Model']
       planetSurfaceScene.el.addChild planetSurfaceScene.views['Minimap.View'].el

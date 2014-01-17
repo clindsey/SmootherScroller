@@ -22,7 +22,7 @@ config =
   tileHeight: 16
 
   viewportOptions:
-    width: 32
+    width: 48
     height: 32
 
   minimapOptions:
