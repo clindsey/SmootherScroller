@@ -16,6 +16,13 @@ moduleLibrary.define 'Stage.View', gamecore.Pooled.extend 'StageView',
       _.bindAll stageView, 'onTick'
       createjs.Ticker.addEventListener 'tick', stageView.onTick
 
+      EventBus.addEventListener '!key:down', (_event, args) ->
+        if args.keyCode is 78
+          config.seed = +new Date
+          config.sessionRandom = +new Date
+          stageView.loadScene sceneLocation, sceneName
+      , this
+
       stageView
   ,
     loadScene: (sceneLocation, sceneName) ->

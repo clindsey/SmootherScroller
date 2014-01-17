@@ -12,6 +12,9 @@ VILLAGE_COUNT = 20
 # the name for the models and views here is just stupid
 moduleLibrary.define 'PlanetSurface.Scene', gamecore.Pooled.extend 'PlanetSurfaceScene',
     create: ->
+      console.log 'seed:', config.seed
+      console.log 'sessionSeed:', config.sessionRandom
+
       planetSurfaceScene = @_super()
 
       planetSurfaceScene.el = new createjs.Container
@@ -54,7 +57,7 @@ moduleLibrary.define 'PlanetSurface.Scene', gamecore.Pooled.extend 'PlanetSurfac
       @views['EntityManager.View'].el.cache 0, 0, config.viewportOptions.width * config.tileWidth, config.viewportOptions.height * config.tileHeight
 
     dispose: ->
-      _.invoke planetSurfaceScene.views, 'dispose'
-      _.invoke planetSurfaceScene.models, 'dispose'
+      _.invoke @views, 'dispose'
+      _.invoke @models, 'dispose'
 
       @release()

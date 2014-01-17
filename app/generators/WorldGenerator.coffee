@@ -3,10 +3,9 @@ require 'utils'
 utils = moduleLibrary.get 'utils'
 
 moduleLibrary.define 'WorldGenerator.Generator', class WorldGenerator
-  tileCache: []
-  chunkCache: []
-
   constructor: (@seed, @options) ->
+    @tileCache = []
+    @chunkCache = []
 
   cacheAllTiles: ->
     for y in [0..@options.worldChunkHeight - 1]
