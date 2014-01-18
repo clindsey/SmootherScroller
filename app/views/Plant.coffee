@@ -34,7 +34,7 @@ moduleLibrary.define 'Plant.View', gamecore.Pooled.extend 'PlantView',
         height: config.tileHeight
       animations:
         first:
-          frames: [277]
+          frames: [549]
   ,
     setPosition: ->
       centerX = Math.floor @viewportModel.width / 2

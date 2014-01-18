@@ -42,21 +42,21 @@ moduleLibrary.define 'Creature.View', gamecore.Pooled.extend 'CreatureView',
         height: config.tileHeight
       animations:
         walkEastBlue:
-          frames: [288, 289, 290, 291]
+          frames: [576, 577, 578, 579]
         walkNorthBlue:
-          frames: [292, 293, 294, 295]
+          frames: [580, 581, 582, 583]
         walkWestBlue:
-          frames: [296, 297, 298, 299]
+          frames: [584, 585, 586, 587]
         walkSouthBlue:
-          frames: [300, 301, 302, 303]
+          frames: [588, 589, 590, 591]
         walkEastOrange:
-          frames: [304, 305, 306, 307]
+          frames: [608, 609, 610, 611]
         walkNorthOrange:
-          frames: [308, 309, 310, 311]
+          frames: [612, 613, 614, 615]
         walkWestOrange:
-          frames: [312, 313, 314, 315]
+          frames: [616, 617, 618, 619]
         walkSouthOrange:
-          frames: [316, 317, 318, 319]
+          frames: [620, 621, 622, 623]
   ,
     onModelMove: ->
       dX = 0

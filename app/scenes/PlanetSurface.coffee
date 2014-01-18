@@ -2,7 +2,7 @@ require 'models/Viewport'
 require 'models/TileMap'
 require 'config'
 require 'views/EntityManager'
-require 'views/Minimap'
+#require 'views/Minimap'
 
 config = moduleLibrary.get 'config'
 
@@ -33,8 +33,8 @@ moduleLibrary.define 'PlanetSurface.Scene', gamecore.Pooled.extend 'PlanetSurfac
       planetSurfaceScene.el.addChild planetSurfaceScene.views['EntityManager.View'].el
       planetSurfaceScene.views['EntityManager.View'].addVillage VILLAGE_COUNT, planetSurfaceScene.models['TileMap.Model']
 
-      planetSurfaceScene.views['Minimap.View'] = (moduleLibrary.get 'Minimap.View').create planetSurfaceScene.models['TileMap.Model'], planetSurfaceScene.views['EntityManager.View'], planetSurfaceScene.models['Viewport.Model']
-      planetSurfaceScene.el.addChild planetSurfaceScene.views['Minimap.View'].el
+      #planetSurfaceScene.views['Minimap.View'] = (moduleLibrary.get 'Minimap.View').create planetSurfaceScene.models['TileMap.Model'], planetSurfaceScene.views['EntityManager.View'], planetSurfaceScene.models['Viewport.Model']
+      #planetSurfaceScene.el.addChild planetSurfaceScene.views['Minimap.View'].el
 
       _.bindAll planetSurfaceScene, 'onTick'
       createjs.Ticker.addEventListener 'tick', planetSurfaceScene.onTick
@@ -52,7 +52,7 @@ moduleLibrary.define 'PlanetSurface.Scene', gamecore.Pooled.extend 'PlanetSurfac
   ,
     onTick: (event) ->
       @views['EntityManager.View'].onTick event
-      @views['Minimap.View'].onTick event
+      #@views['Minimap.View'].onTick event
 
       @views['EntityManager.View'].el.cache 0, 0, config.viewportOptions.width * config.tileWidth, config.viewportOptions.height * config.tileHeight
 

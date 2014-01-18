@@ -8,6 +8,8 @@ moduleLibrary.define 'Stage.View', gamecore.Pooled.extend 'StageView',
 
       stageView.el = new createjs.Stage canvasEl
 
+      stageView.el.enableMouseOver 10
+
       stageView.loadScene sceneLocation, sceneName
 
       createjs.Ticker.setFPS config.fps
@@ -15,6 +17,8 @@ moduleLibrary.define 'Stage.View', gamecore.Pooled.extend 'StageView',
 
       _.bindAll stageView, 'onTick'
       createjs.Ticker.addEventListener 'tick', stageView.onTick
+
+      EventBus.addEventListener '!planet:load', stageView.onPlanetLoad, stageView
 
       EventBus.addEventListener '!key:down', (_event, args) ->
         if args.keyCode is 78
@@ -25,6 +29,9 @@ moduleLibrary.define 'Stage.View', gamecore.Pooled.extend 'StageView',
 
       stageView
   ,
+    onPlanetLoad: (event, planetModel) ->
+      @loadScene 'scenes/PlanetSurface', 'PlanetSurface.Scene'
+
     loadScene: (sceneLocation, sceneName) ->
       if @scene
         @scene.dispose()

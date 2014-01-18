@@ -34,9 +34,9 @@ moduleLibrary.define 'Building.View', gamecore.Pooled.extend 'BuildingView',
         height: config.tileHeight
       animations:
         firstBlue:
-          frames: [272]
+          frames: [544]
         firstOrange:
-          frames: [282]
+          frames: [554]
   ,
     setPosition: ->
       animation = "first#{@model.color}"

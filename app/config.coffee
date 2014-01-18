@@ -1,10 +1,10 @@
 config =
-  seed: +new Date
-  sessionRandom: +new Date
+  seed: 19870910120000 #+new Date
+  sessionRandom: 19870910120000 #+new Date
 
   fps: 20
 
-  spriteSheetSource: 'images/tileset_terra.png'
+  spriteSheetSource: 'images/tileset.png'
 
   generator:
     location: 'generators/WorldGenerator'
@@ -22,8 +22,8 @@ config =
   tileHeight: 16
 
   viewportOptions:
-    width: 48
-    height: 32
+    width: 20
+    height: 15
 
   minimapOptions:
     tileWidth: 2
@@ -33,7 +33,9 @@ config.worldTileWidth = config.generator.options.worldChunkWidth * config.genera
 config.worldTileHeight = config.generator.options.worldChunkHeight * config.generator.options.chunkTileHeight
 
 config.canvasAdapterOptions =
-  width: (config.viewportOptions.width * config.tileWidth) + (config.minimapOptions.tileWidth * config.worldTileWidth)
-  height: config.viewportOptions.height * config.tileHeight
+  width: 320
+  height: 240
+  #width: (config.viewportOptions.width * config.tileWidth) + (config.minimapOptions.tileWidth * config.worldTileWidth)
+  #height: config.viewportOptions.height * config.tileHeight
 
 moduleLibrary.define 'config', config
