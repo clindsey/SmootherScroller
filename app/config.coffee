@@ -4,7 +4,7 @@ config =
 
   fps: 20
 
-  spriteSheetSource: 'images/tileset.png'
+  spriteSheetSource: 'images/tileset_32.png'
 
   generator:
     location: 'generators/WorldGenerator'
@@ -18,8 +18,8 @@ config =
       chunkTileWidth: 13
       chunkTileHeight: 13
 
-  tileWidth: 16
-  tileHeight: 16
+  tileWidth: 32
+  tileHeight: 32
 
   viewportOptions:
     width: 20
@@ -33,8 +33,8 @@ config.worldTileWidth = config.generator.options.worldChunkWidth * config.genera
 config.worldTileHeight = config.generator.options.worldChunkHeight * config.generator.options.chunkTileHeight
 
 config.canvasAdapterOptions =
-  width: 320
-  height: 240
+  width: 640
+  height: 480
   #width: (config.viewportOptions.width * config.tileWidth) + (config.minimapOptions.tileWidth * config.worldTileWidth)
   #height: config.viewportOptions.height * config.tileHeight
 

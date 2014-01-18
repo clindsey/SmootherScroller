@@ -31,6 +31,8 @@ moduleLibrary.define 'StarMap.Scene', gamecore.Pooled.extend 'StarMapScene',
 
       seed = starMapScene.seed
 
+      margin = (config.canvasAdapterOptions.width / 3) - 10
+
       for y in [0..2]
         for x in [0..2]
           seed += 1
@@ -38,8 +40,8 @@ moduleLibrary.define 'StarMap.Scene', gamecore.Pooled.extend 'StarMapScene',
           planetModel = PlanetModel.create seed
           planetView = PlanetView.create planetModel
 
-          planetView.el.x = (x * 80) - halfWidth + 80
-          planetView.el.y = (y * 70) - halfHeight + 40
+          planetView.el.x = (x * margin) - halfWidth + (margin / 2)
+          planetView.el.y = (y * margin) + 10
 
           starMapScene.el.addChild planetView.el
 
@@ -48,7 +50,7 @@ moduleLibrary.define 'StarMap.Scene', gamecore.Pooled.extend 'StarMapScene',
 
       starMapScene.backgroundEl = el
 
-      el.sourceRect = new createjs.Rectangle 0, 352, 320, 240
+      el.sourceRect = new createjs.Rectangle 0, 352 * 2, config.canvasAdapterOptions.width, config.canvasAdapterOptions.height
 
       starMapScene.el.addChild el
   ,

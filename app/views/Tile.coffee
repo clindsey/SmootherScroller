@@ -22,8 +22,8 @@ moduleLibrary.define 'Tile.View', gamecore.Pooled.extend 'TileView',
     setTileIndex: ->
       tileIndex = @model.tileIndex
 
-      x = (tileIndex % config.tileWidth)
-      y = Math.floor tileIndex / config.tileHeight
+      x = (tileIndex % 16)
+      y = Math.floor tileIndex / 16 # ground tileset is 16 tiles wide and tall
 
       tw = config.tileWidth
       th = config.tileHeight

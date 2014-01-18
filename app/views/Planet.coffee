@@ -24,7 +24,7 @@ moduleLibrary.define 'Planet.View', gamecore.Pooled.extend 'PlanetView',
       planetView
 
     addText: (planetView) ->
-      textEl = new createjs.Text planetView.model.name, '10px Monaco', '#fff'
+      textEl = new createjs.Text planetView.model.name, '14px Monaco', '#fff'
 
       textEl.x -= (textEl.getMeasuredWidth() / 2) - (config.tileWidth / 2)
       textEl.y += config.tileHeight + 2
