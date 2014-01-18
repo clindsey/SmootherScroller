@@ -10,7 +10,7 @@ moduleLibrary.define 'Stage.View', gamecore.Pooled.extend 'StageView',
 
       stageView.el.enableMouseOver 10
 
-      stageView.loadScene sceneLocation, sceneName
+      stageView.loadScene sceneLocation, sceneName, config.seed, config.sessionRandom
 
       createjs.Ticker.setFPS config.fps
       createjs.Ticker.useRAF = true
@@ -22,17 +22,15 @@ moduleLibrary.define 'Stage.View', gamecore.Pooled.extend 'StageView',
 
       EventBus.addEventListener '!key:down', (_event, args) ->
         if args.keyCode is 78
-          config.seed = +new Date
-          config.sessionRandom = +new Date
-          stageView.loadScene sceneLocation, sceneName
+          stageView.loadScene 'scenes/StarMap', 'StarMap.Scene', config.seed, config.sessionRandom
       , this
 
       stageView
   ,
     onPlanetLoad: (event, planetModel) ->
-      @loadScene 'scenes/PlanetSurface', 'PlanetSurface.Scene'
+      @loadScene 'scenes/PlanetSurface', 'PlanetSurface.Scene', planetModel.seed, planetModel.seed
 
-    loadScene: (sceneLocation, sceneName) ->
+    loadScene: (sceneLocation, sceneName, seed, sessionRandom) ->
       if @scene
         @scene.dispose()
 
@@ -40,7 +38,7 @@ moduleLibrary.define 'Stage.View', gamecore.Pooled.extend 'StageView',
 
       require sceneLocation
 
-      @scene = (moduleLibrary.get sceneName).create()
+      @scene = (moduleLibrary.get sceneName).create seed, sessionRandom
 
       @el.addChild @scene.el
 

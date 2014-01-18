@@ -5,14 +5,14 @@ utils = moduleLibrary.get 'utils'
 config = moduleLibrary.get 'config'
 
 moduleLibrary.define 'TileMap.Model', gamecore.Pooled.extend 'TileMapModel',
-    create: (tileSourceModelLocation, tileSourceModelName, tileSourceModelOptions) ->
+    create: (tileSourceModelLocation, tileSourceModelName, tileSourceModelOptions, seed) ->
       tileMapModel = @_super()
 
       tileMapModel.tileCache = []
 
       require tileSourceModelLocation
 
-      tileMapModel.tileSourceModel = new (moduleLibrary.get tileSourceModelName) config.seed, tileSourceModelOptions
+      tileMapModel.tileSourceModel = new (moduleLibrary.get tileSourceModelName) seed, tileSourceModelOptions
 
       tileMapModel
   ,

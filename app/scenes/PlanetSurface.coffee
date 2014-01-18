@@ -11,9 +11,9 @@ VILLAGE_COUNT = 20
 # due for refactor. should attach views dynamically
 # the name for the models and views here is just stupid
 moduleLibrary.define 'PlanetSurface.Scene', gamecore.Pooled.extend 'PlanetSurfaceScene',
-    create: ->
-      console.log 'seed:', config.seed
-      console.log 'sessionSeed:', config.sessionRandom
+    create: (seed, sessionRandom) ->
+      console.log 'seed:', seed
+      console.log 'sessionSeed:', sessionRandom
 
       planetSurfaceScene = @_super()
 
@@ -22,7 +22,7 @@ moduleLibrary.define 'PlanetSurface.Scene', gamecore.Pooled.extend 'PlanetSurfac
       planetSurfaceScene.views = {}
       planetSurfaceScene.models = {}
 
-      planetSurfaceScene.models['TileMap.Model'] = (moduleLibrary.get 'TileMap.Model').create config.generator.location, config.generator.name, config.generator.options
+      planetSurfaceScene.models['TileMap.Model'] = (moduleLibrary.get 'TileMap.Model').create config.generator.location, config.generator.name, config.generator.options, seed
 
       planetSurfaceScene.models['TileMap.Model'].cacheAllTiles()
 

@@ -10,8 +10,9 @@ PlanetModel = moduleLibrary.get 'Planet.Model'
 PlanetView = moduleLibrary.get 'Planet.View'
 
 moduleLibrary.define 'StarMap.Scene', gamecore.Pooled.extend 'StarMapScene',
-    create: ->
+    create: (seed, sessionRandom) ->
       starMapScene = @_super()
+      starMapScene.seed = seed
 
       starMapScene.el = new createjs.Container
 
@@ -25,17 +26,22 @@ moduleLibrary.define 'StarMap.Scene', gamecore.Pooled.extend 'StarMapScene',
       starMapScene
 
     addPlanets: (starMapScene) ->
-      seed = config.seed
+      halfWidth = Math.floor config.tileWidth / 2
+      halfHeight = Math.floor config.tileHeight / 2
 
-      seed += 1
+      seed = starMapScene.seed
 
-      planetModel = PlanetModel.create seed
-      planetView = PlanetView.create planetModel
+      for y in [0..2]
+        for x in [0..2]
+          seed += 1
 
-      planetView.el.x = 152
-      planetView.el.y = 112
+          planetModel = PlanetModel.create seed
+          planetView = PlanetView.create planetModel
 
-      starMapScene.el.addChild planetView.el
+          planetView.el.x = (x * 80) - halfWidth + 80
+          planetView.el.y = (y * 70) - halfHeight + 40
+
+          starMapScene.el.addChild planetView.el
 
     addBackground: (starMapScene) ->
       el = new createjs.Bitmap utils.tilesetImg

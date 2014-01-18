@@ -3,10 +3,12 @@ require 'utils'
 utils = moduleLibrary.get 'utils'
 
 moduleLibrary.define 'Planet.Model', gamecore.Pooled.extend 'PlanetModel',
-    create: (@seed) ->
+    create: (seed) ->
       planetModel = @_super()
 
-      planetModel.name = @generateName @seed
+      planetModel.seed = seed
+
+      planetModel.name = @generateName planetModel.seed
 
       planetModel
 
