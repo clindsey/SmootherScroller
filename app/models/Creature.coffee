@@ -45,6 +45,8 @@ moduleLibrary.define 'Creature.Model', gamecore.Pooled.extend 'CreatureModel',
           onrest: ->
             creatureModel.path = creatureModel.getPath creatureModel.plantModels[creatureModel.plantIndex]
 
+            creatureModel.moving = true
+
           onwork: ->
             creatureModel.path = creatureModel.getPath creatureModel.plantModels[creatureModel.plantIndex]
 
@@ -54,6 +56,8 @@ moduleLibrary.define 'Creature.Model', gamecore.Pooled.extend 'CreatureModel',
               creatureModel.plantIndex = 0
 
               creatureModel.path = creatureModel.getPath creatureModel.buildingModel
+
+            creatureModel.moving = true
   ,
     setPosition: (x, y) ->
       if y isnt @y or x isnt @x
@@ -74,8 +78,6 @@ moduleLibrary.define 'Creature.Model', gamecore.Pooled.extend 'CreatureModel',
 
     getPath: (targetModel) ->
       path = @tileMapModel.findPath @x, @y, targetModel.x, targetModel.y, 60, 60
-
-      @moving = true
 
       path
 

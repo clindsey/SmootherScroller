@@ -11,7 +11,8 @@ moduleLibrary.define 'Minimap.View', gamecore.Pooled.extend 'MinimapView',
       minimapView.lastUpdate = 0
 
       minimapView.el = new createjs.Container
-      minimapView.el.x = config.viewportOptions.width * config.tileWidth
+      minimapView.el.x = config.tileWidth# * 1.5
+      minimapView.el.y = config.tileHeight# * 1.5
 
       minimapView.terrainEl = new createjs.Shape
       @buildTileViews minimapView, tileMapModel

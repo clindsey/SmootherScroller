@@ -1,6 +1,6 @@
 config =
-  seed: 19870910120000 #+new Date
-  sessionRandom: 19870910120000 #+new Date
+  seed: 201401172019 #+new Date
+  sessionRandom: 201401172019 #+new Date
 
   fps: 20
 
@@ -10,13 +10,13 @@ config =
     location: 'generators/WorldGenerator'
     name: 'WorldGenerator.Generator'
     options:
-      waterCutoff: 0.5
+      waterCutoff: 0.4
       # world size
-      worldChunkWidth: 7
-      worldChunkHeight: 7
+      worldChunkWidth: 8
+      worldChunkHeight: 8
       # zoom level
-      chunkTileWidth: 13
-      chunkTileHeight: 13
+      chunkTileWidth: 8
+      chunkTileHeight: 8
 
   tileWidth: 32
   tileHeight: 32
