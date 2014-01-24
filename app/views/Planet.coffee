@@ -49,7 +49,11 @@ moduleLibrary.define 'Planet.View', gamecore.Pooled.extend 'PlanetView',
           frames: [640, 641, 642, 643, 644, 645, 646, 647, 648, 649, 650, 651, 652, 653, 654]
   ,
     onMouseDown: (_event) ->
-      EventBus.dispatch '!planet:load', this, @model
+      EventBus.dispatch '!scene:load', this, {
+        sceneLocation: 'scenes/PlanetSurface'
+        sceneName: 'PlanetSurface.Scene'
+        seed: @model.seed
+      }
 
     dispose: ->
       @release()

@@ -1,6 +1,6 @@
 config =
-  seed: 201401172019 #+new Date
-  sessionRandom: 201401172019 #+new Date
+  seed: +new Date
+  sessionRandom: +new Date
 
   fps: 20
 

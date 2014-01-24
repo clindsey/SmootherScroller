@@ -18,17 +18,12 @@ moduleLibrary.define 'Stage.View', gamecore.Pooled.extend 'StageView',
       _.bindAll stageView, 'onTick'
       createjs.Ticker.addEventListener 'tick', stageView.onTick
 
-      EventBus.addEventListener '!planet:load', stageView.onPlanetLoad, stageView
-
-      EventBus.addEventListener '!key:down', (_event, args) ->
-        if args.keyCode is 78
-          stageView.loadScene 'scenes/StarMap', 'StarMap.Scene', config.seed, config.sessionRandom
-      , this
+      EventBus.addEventListener '!scene:load', stageView.onSceneLoad, stageView
 
       stageView
   ,
-    onPlanetLoad: (event, planetModel) ->
-      @loadScene 'scenes/PlanetSurface', 'PlanetSurface.Scene', planetModel.seed, planetModel.seed
+    onSceneLoad: (event, sceneProperties) ->
+      @loadScene sceneProperties.sceneLocation, sceneProperties.sceneName, sceneProperties.seed, sceneProperties.seed
 
     loadScene: (sceneLocation, sceneName, seed, sessionRandom) ->
       if @scene

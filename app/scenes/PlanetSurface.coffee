@@ -1,10 +1,12 @@
 require 'models/Viewport'
 require 'models/TileMap'
 require 'config'
+require 'utils'
 require 'views/EntityManager'
 require 'views/Minimap'
 
 config = moduleLibrary.get 'config'
+utils = moduleLibrary.get 'utils'
 
 VILLAGE_COUNT = 20
 
@@ -21,6 +23,8 @@ moduleLibrary.define 'PlanetSurface.Scene', gamecore.Pooled.extend 'PlanetSurfac
 
       planetSurfaceScene.views = {}
       planetSurfaceScene.models = {}
+
+      planetSurfaceScene.seed = seed
 
       planetSurfaceScene.models['TileMap.Model'] = (moduleLibrary.get 'TileMap.Model').create config.generator.location, config.generator.name, config.generator.options, seed
 
@@ -39,6 +43,8 @@ moduleLibrary.define 'PlanetSurface.Scene', gamecore.Pooled.extend 'PlanetSurfac
       _.bindAll planetSurfaceScene, 'onTick'
       createjs.Ticker.addEventListener 'tick', planetSurfaceScene.onTick
 
+      EventBus.addEventListener '!key:down', planetSurfaceScene.onKeyDown, planetSurfaceScene
+
       planetSurfaceScene
 
     createViewport: (planetSurfaceScene, tileMapModel) ->
@@ -56,8 +62,18 @@ moduleLibrary.define 'PlanetSurface.Scene', gamecore.Pooled.extend 'PlanetSurfac
 
       @views['EntityManager.View'].el.cache 0, 0, config.viewportOptions.width * config.tileWidth, config.viewportOptions.height * config.tileHeight
 
+    onKeyDown: (_event, args) ->
+      if args.keyCode is 78
+        EventBus.dispatch '!scene:load', this, {
+          sceneLocation: 'scenes/PlanetSurface'
+          sceneName: 'PlanetSurface.Scene'
+          seed: Math.floor(utils.sessionRandom() * 0xfff)
+        }
+
     dispose: ->
       _.invoke @views, 'dispose'
       _.invoke @models, 'dispose'
+
+      EventBus.removeEventListener '!key:down', @onKeyDown, this
 
       @release()

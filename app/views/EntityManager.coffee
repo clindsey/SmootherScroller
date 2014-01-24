@@ -87,11 +87,11 @@ moduleLibrary.define 'EntityManager.View', gamecore.Pooled.extend 'EntityManager
 
     addPlants: (populationSize, tileMapModel, buildingModel) ->
       plantCount = 0
-      giveupCounter = 5
+      giveupCounter = 20
 
       plantModels = []
 
-      while plantCount < populationSize and giveupCounter -= 1
+      while plantCount < populationSize and giveupCounter
         s = config.sessionRandom += 1
         x = utils.clamp Math.floor(buildingModel.x + ((utils.random(s) * 20) - 10)), config.worldTileWidth
         y = utils.clamp Math.floor(buildingModel.y + ((utils.random(s += 1) * 20) - 10)), config.worldTileHeight
@@ -101,7 +101,9 @@ moduleLibrary.define 'EntityManager.View', gamecore.Pooled.extend 'EntityManager
         if tile is 1 and @permanentsLookup["#{x}_#{y}"] isnt true
           path = tileMapModel.findPath buildingModel.x, buildingModel.y, x, y, 20, 20
 
-          continue unless path.length
+          unless path.length
+            giveupCounter -= 1
+            continue
 
           plantModel = (moduleLibrary.get 'Plant.Model').create x, y
           plantView = (moduleLibrary.get 'Plant.View').create plantModel, @viewportModel
