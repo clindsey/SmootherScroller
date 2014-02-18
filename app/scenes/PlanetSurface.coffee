@@ -26,19 +26,19 @@ moduleLibrary.define 'PlanetSurface.Scene', gamecore.Pooled.extend 'PlanetSurfac
 
       planetSurfaceScene.seed = seed
 
-      planetSurfaceScene.models['TileMap.Model'] = (moduleLibrary.get 'TileMap.Model').create config.generator.location, config.generator.name, config.generator.options, seed
+      planetSurfaceScene.models.tileMapModel = (moduleLibrary.get 'TileMap.Model').create config.generator.location, config.generator.name, config.generator.options, seed
 
-      planetSurfaceScene.models['TileMap.Model'].cacheAllTiles()
+      planetSurfaceScene.models.tileMapModel.cacheAllTiles()
 
-      @createViewport planetSurfaceScene, planetSurfaceScene.models['TileMap.Model']
+      @createViewport planetSurfaceScene, planetSurfaceScene.models.tileMapModel
 
-      planetSurfaceScene.views['EntityManager.View'] = (moduleLibrary.get 'EntityManager.View').create planetSurfaceScene.models['Viewport.Model']
+      planetSurfaceScene.views.entityManagerView = (moduleLibrary.get 'EntityManager.View').create planetSurfaceScene.models.viewportModel
 
-      planetSurfaceScene.el.addChild planetSurfaceScene.views['EntityManager.View'].el
-      planetSurfaceScene.views['EntityManager.View'].addVillage VILLAGE_COUNT, planetSurfaceScene.models['TileMap.Model']
+      planetSurfaceScene.el.addChild planetSurfaceScene.views.entityManagerView.el
+      planetSurfaceScene.views.entityManagerView.addVillage VILLAGE_COUNT, planetSurfaceScene.models.tileMapModel
 
-      planetSurfaceScene.views['Minimap.View'] = (moduleLibrary.get 'Minimap.View').create planetSurfaceScene.models['TileMap.Model'], planetSurfaceScene.views['EntityManager.View'], planetSurfaceScene.models['Viewport.Model']
-      planetSurfaceScene.el.addChild planetSurfaceScene.views['Minimap.View'].el
+      planetSurfaceScene.views.minimapView = (moduleLibrary.get 'Minimap.View').create planetSurfaceScene.models.tileMapModel, planetSurfaceScene.views.entityManagerView, planetSurfaceScene.models.viewportModel
+      planetSurfaceScene.el.addChild planetSurfaceScene.views.minimapView.el
 
       _.bindAll planetSurfaceScene, 'onTick'
       createjs.Ticker.addEventListener 'tick', planetSurfaceScene.onTick
@@ -51,16 +51,16 @@ moduleLibrary.define 'PlanetSurface.Scene', gamecore.Pooled.extend 'PlanetSurfac
       viewportX = Math.floor config.worldTileWidth / 2
       viewportY = Math.floor config.worldTileHeight / 2
 
-      planetSurfaceScene.models['Viewport.Model'] = (moduleLibrary.get 'Viewport.Model').create viewportX, viewportY, config.viewportOptions.width, config.viewportOptions.height
-      planetSurfaceScene.views['Viewport.View'] = (moduleLibrary.get 'Viewport.View').create planetSurfaceScene.models['Viewport.Model'], tileMapModel
+      planetSurfaceScene.models.viewportModel = (moduleLibrary.get 'Viewport.Model').create viewportX, viewportY, config.viewportOptions.width, config.viewportOptions.height
+      planetSurfaceScene.views.viewportView = (moduleLibrary.get 'Viewport.View').create planetSurfaceScene.models.viewportModel, tileMapModel
 
-      planetSurfaceScene.el.addChild planetSurfaceScene.views['Viewport.View'].el
+      planetSurfaceScene.el.addChild planetSurfaceScene.views.viewportView.el
   ,
     onTick: (event) ->
-      @views['EntityManager.View'].onTick event
-      @views['Minimap.View'].onTick event
+      @views.entityManagerView.onTick event
+      @views.minimapView.onTick event
 
-      @views['EntityManager.View'].el.cache 0, 0, config.viewportOptions.width * config.tileWidth, config.viewportOptions.height * config.tileHeight
+      @views.entityManagerView.el.cache 0, 0, config.viewportOptions.width * config.tileWidth, config.viewportOptions.height * config.tileHeight
 
     onKeyDown: (_event, args) ->
       if args.keyCode is 78

@@ -1,4 +1,4 @@
-LIVERELOAD_PORT = 35729
+LIVERELOAD_PORT = 35730
 lrSnippet = require('connect-livereload') { port: LIVERELOAD_PORT }
 mountFolder = (connect, dir) ->
   connect.static require('path').resolve dir
@@ -134,7 +134,7 @@ module.exports = (grunt) ->
 
     connect:
       options:
-        port: 3333
+        port: 3334
         hostname: '0.0.0.0'
         base: 'public'
       livereload:
