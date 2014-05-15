@@ -130,6 +130,9 @@ moduleLibrary.define 'Viewport.View', gamecore.Pooled.extend 'ViewportView',
 
           tileModel.setTileIndex tileMapData[y][x]
 
+      @indexOffsetX = @model.x
+      @indexOffsetY = @model.y
+
     onKeyDown: (_event, args) ->
       x = @model.x
       y = @model.y
