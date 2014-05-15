@@ -10,6 +10,8 @@ moduleLibrary.define 'Plant.View', gamecore.Pooled.extend 'PlantView',
 
       plantView.offsetX = 0
       plantView.offsetY = 0
+      plantView.scrollX = 0
+      plantView.scrollY = 0
 
       plantView.model = plantModel
 
@@ -22,8 +24,13 @@ moduleLibrary.define 'Plant.View', gamecore.Pooled.extend 'PlantView',
       plantView.el.gotoAndPlay 'first'
 
       EventBus.addEventListener "!move:#{viewportModel.uniqueId}", plantView.setPosition, plantView
+      EventBus.addEventListener "!scroll:#{viewportModel.uniqueId}", plantView.setScroll, plantView
 
       plantView.setPosition()
+
+      _.bindAll plantView, 'onTick'
+
+      plantView.el.addEventListener 'tick', plantView.onTick
 
       plantView
 
@@ -36,6 +43,10 @@ moduleLibrary.define 'Plant.View', gamecore.Pooled.extend 'PlantView',
         first:
           frames: [549]
   ,
+    setScroll: ->
+      @scrollX = @viewportModel.scrollX
+      @scrollY = @viewportModel.scrollY
+
     setPosition: ->
       centerX = Math.floor @viewportModel.width / 2
       centerY = Math.floor @viewportModel.height / 2
@@ -76,8 +87,12 @@ moduleLibrary.define 'Plant.View', gamecore.Pooled.extend 'PlantView',
       newX = myNewX * config.tileWidth
       newY = myNewY * config.tileHeight
 
-      @el.x = newX
-      @el.y = newY
+      @intendedX = newX
+      @intendedY = newY
+
+    onTick: ->
+      @el.x = @intendedX + @scrollX
+      @el.y = @intendedY + @scrollY
 
     dispose: ->
       EventBus.removeEventListener "!move:#{@viewportModel.uniqueId}", @setPosition, this

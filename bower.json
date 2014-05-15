@@ -25,6 +25,7 @@
     "moduleLibrary": "http://gist.github.com/7273186.git",
     "AStar": "http://gist.github.com/42b936fc73a5748fffda.git",
     "mochaTestHelper": "http://gist.github.com/7273584.git",
-    "javascript-state-machine": "~2.2.0"
+    "javascript-state-machine": "~2.2.0",
+    "scroller": "~1.2.2"
   }
 }

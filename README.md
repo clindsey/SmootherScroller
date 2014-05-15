@@ -1,9 +1,5 @@
-WorldGenerator
+SmootherScroller
 
-arrow keys to navigate
+Mouse to navigate
 
-simple static terrain pattern generator. meant to be static memory
-
-TODO:
-* refactor plant/creature views, lots of shared code
-* memory leak somewhere when loading new planets
+Smooth scrolling viewer for procedurally generated terrain.

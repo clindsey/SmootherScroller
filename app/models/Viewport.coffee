@@ -6,6 +6,8 @@ moduleLibrary.define 'Viewport.Model', gamecore.Pooled.extend 'ViewportModel',
       viewportModel.y = y
       viewportModel.width = width
       viewportModel.height = height
+      viewportModel.scrollX = 0
+      viewportModel.scrollY = 0
 
       viewportModel
   ,
@@ -15,6 +17,13 @@ moduleLibrary.define 'Viewport.Model', gamecore.Pooled.extend 'ViewportModel',
         @y = y
 
         EventBus.dispatch "!move:#{@uniqueId}", this
+
+    setScroll: (x, y) ->
+      if y isnt @scrollY or x isnt @scrollX
+        @scrollX = x
+        @scrollY = y
+
+        EventBus.dispatch "!scroll:#{@uniqueId}", this
 
     dispose: ->
       @release()

@@ -29,6 +29,7 @@ module.exports = (grunt) ->
             'vendor/javascripts/tween.js'
             'vendor/javascripts/astar.js'
             'vendor/javascripts/state-machine.js'
+            'vendor/javascripts/Scroller.js'
           ]
           'public/test/unit/javascripts/unit-tests-vendor.js': [
             'test/unit/vendor/javascripts/mocha.js'

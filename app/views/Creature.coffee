@@ -10,6 +10,8 @@ moduleLibrary.define 'Creature.View', gamecore.Pooled.extend 'CreatureView',
 
       creatureView.offsetX = 0
       creatureView.offsetY = 0
+      creatureView.scrollX = 0
+      creatureView.scrollY = 0
 
       creatureView.model = creatureModel
 
@@ -23,6 +25,7 @@ moduleLibrary.define 'Creature.View', gamecore.Pooled.extend 'CreatureView',
 
       EventBus.addEventListener "!move:#{creatureModel.uniqueId}", creatureView.onModelMove, creatureView
       EventBus.addEventListener "!move:#{viewportModel.uniqueId}", creatureView.setPosition, creatureView
+      EventBus.addEventListener "!scroll:#{viewportModel.uniqueId}", creatureView.setScroll, creatureView
 
       creatureView.setPosition()
 
@@ -79,6 +82,10 @@ moduleLibrary.define 'Creature.View', gamecore.Pooled.extend 'CreatureView',
 
       @setPosition()
 
+    setScroll: ->
+      @scrollX = @viewportModel.scrollX
+      @scrollY = @viewportModel.scrollY
+
     setPosition: ->
       animation = "walk#{@model.direction}#{@model.color}"
 
@@ -127,8 +134,8 @@ moduleLibrary.define 'Creature.View', gamecore.Pooled.extend 'CreatureView',
       @intendedY = newY
 
     onTick: ->
-      @el.x = @intendedX + @offsetX
-      @el.y = @intendedY + @offsetY
+      @el.x = @intendedX + @offsetX + @scrollX
+      @el.y = @intendedY + @offsetY + @scrollY
 
     dispose: ->
       @el.removeEventListener 'tick', @onTick

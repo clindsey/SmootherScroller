@@ -10,6 +10,8 @@ moduleLibrary.define 'Building.View', gamecore.Pooled.extend 'BuildingView',
 
       buildingView.offsetX = 0
       buildingView.offsetY = 0
+      buildingView.scrollX = 0
+      buildingView.scrollY = 0
 
       buildingView.model = buildingModel
 
@@ -22,8 +24,13 @@ moduleLibrary.define 'Building.View', gamecore.Pooled.extend 'BuildingView',
       buildingView.el.gotoAndPlay 'first'
 
       EventBus.addEventListener "!move:#{viewportModel.uniqueId}", buildingView.setPosition, buildingView
+      EventBus.addEventListener "!scroll:#{viewportModel.uniqueId}", buildingView.setScroll, buildingView
 
       buildingView.setPosition()
+
+      _.bindAll buildingView, 'onTick'
+
+      buildingView.el.addEventListener 'tick', buildingView.onTick
 
       buildingView
 
@@ -38,6 +45,10 @@ moduleLibrary.define 'Building.View', gamecore.Pooled.extend 'BuildingView',
         firstOrange:
           frames: [554]
   ,
+    setScroll: ->
+      @scrollX = @viewportModel.scrollX
+      @scrollY = @viewportModel.scrollY
+
     setPosition: ->
       animation = "first#{@model.color}"
 
@@ -82,8 +93,12 @@ moduleLibrary.define 'Building.View', gamecore.Pooled.extend 'BuildingView',
       newX = myNewX * config.tileWidth
       newY = myNewY * config.tileHeight
 
-      @el.x = newX
-      @el.y = newY
+      @intendedX = newX
+      @intendedY = newY
+
+    onTick: ->
+      @el.x = @intendedX + @scrollX
+      @el.y = @intendedY + @scrollY
 
     dispose: ->
       EventBus.removeEventListener "!move:#{@viewportModel.uniqueId}", @setPosition, this
