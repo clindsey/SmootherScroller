@@ -24,7 +24,7 @@ moduleLibrary.define 'Plant.View', gamecore.Pooled.extend 'PlantView',
       plantView.el.gotoAndPlay 'first'
 
       EventBus.addEventListener "!move:#{viewportModel.uniqueId}", plantView.setPosition, plantView
-      EventBus.addEventListener "!scroll:#{viewportModel.uniqueId}", plantView.setScroll, plantView
+      #EventBus.addEventListener "!scroll:#{viewportModel.uniqueId}", plantView.setScroll, plantView
 
       plantView.setPosition()
 

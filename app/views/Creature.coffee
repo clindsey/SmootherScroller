@@ -25,7 +25,7 @@ moduleLibrary.define 'Creature.View', gamecore.Pooled.extend 'CreatureView',
 
       EventBus.addEventListener "!move:#{creatureModel.uniqueId}", creatureView.onModelMove, creatureView
       EventBus.addEventListener "!move:#{viewportModel.uniqueId}", creatureView.setPosition, creatureView
-      EventBus.addEventListener "!scroll:#{viewportModel.uniqueId}", creatureView.setScroll, creatureView
+      #EventBus.addEventListener "!scroll:#{viewportModel.uniqueId}", creatureView.setScroll, creatureView
 
       creatureView.setPosition()
 

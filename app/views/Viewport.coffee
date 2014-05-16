@@ -38,6 +38,7 @@ moduleLibrary.define 'Viewport.View', gamecore.Pooled.extend 'ViewportView',
       viewportView.indexOffsetX = Math.floor config.worldTileWidth / 2
       viewportView.indexOffsetY = Math.floor config.worldTileHeight / 2
 
+      # need a lot of refactors around here
       viewportView.el.on 'mousedown', (e) ->
         viewportView.scroller.doTouchStart [e.nativeEvent], +new Date
 
@@ -116,7 +117,7 @@ moduleLibrary.define 'Viewport.View', gamecore.Pooled.extend 'ViewportView',
       @indexOffsetY = utils.clamp @indexOffsetY, config.worldTileHeight
 
       scrollX = @el.x
-      scrollX += Math.floor(config.worldTileWidth / 4 + 4) * config.tileWidth
+      scrollX += Math.floor(config.worldTileWidth / 4 + 4) * config.tileWidth # get rid of these magic numbers
       scrollY = @el.y
       scrollY += Math.floor(config.worldTileHeight / 4 - 1) * config.tileHeight
       @model.setScroll scrollX, scrollY

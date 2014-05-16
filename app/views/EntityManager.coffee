@@ -20,6 +20,9 @@ moduleLibrary.define 'EntityManager.View', gamecore.Pooled.extend 'EntityManager
 
       entityManagerView.lastUpdate = 0
 
+      entityManagerView.scrollX = 0
+      entityManagerView.scrollY = 0
+
       entityManagerView.entityViews = []
       entityManagerView.entityModels = []
 
@@ -27,10 +30,20 @@ moduleLibrary.define 'EntityManager.View', gamecore.Pooled.extend 'EntityManager
 
       entityManagerView.viewportModel = viewportModel
 
+      EventBus.addEventListener "!move:#{viewportModel.uniqueId}", entityManagerView.setPosition, entityManagerView
+
       entityManagerView
   ,
+    setPosition: ->
+      _.each @entityViews, (entityView) ->
+        entityView.setPosition()
+        entityView.onTick()
+
     onTick: (event) ->
       timeDelta = event.time - @lastUpdate
+
+      @el.x = @viewportModel.scrollX
+      @el.y = @viewportModel.scrollY
 
       if Math.floor(timeDelta / 500) >= 1
         _.each @entityModels, (entityModel) ->

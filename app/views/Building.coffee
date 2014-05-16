@@ -24,7 +24,7 @@ moduleLibrary.define 'Building.View', gamecore.Pooled.extend 'BuildingView',
       buildingView.el.gotoAndPlay 'first'
 
       EventBus.addEventListener "!move:#{viewportModel.uniqueId}", buildingView.setPosition, buildingView
-      EventBus.addEventListener "!scroll:#{viewportModel.uniqueId}", buildingView.setScroll, buildingView
+      #EventBus.addEventListener "!scroll:#{viewportModel.uniqueId}", buildingView.setScroll, buildingView
 
       buildingView.setPosition()
 
