@@ -29,7 +29,7 @@ moduleLibrary.define 'Minimap.View', gamecore.Pooled.extend 'MinimapView',
 
       _.bindAll minimapView, 'onClick'
 
-      minimapView.el.addEventListener 'click', minimapView.onClick
+      minimapView.el.addEventListener 'mousedown', minimapView.onClick
 
       minimapView.buildEntityViews()
       minimapView.drawOverlayView()
