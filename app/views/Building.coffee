@@ -6,7 +6,7 @@ config = moduleLibrary.get 'config'
 
 moduleLibrary.define 'Building.View', gamecore.Pooled.extend 'BuildingView',
     create: (buildingModel, viewportModel) ->
-      buildingView = @_super()
+      buildingView = @_super buildingModel, viewportModel
 
       buildingView.offsetX = 0
       buildingView.offsetY = 0
@@ -20,8 +20,9 @@ moduleLibrary.define 'Building.View', gamecore.Pooled.extend 'BuildingView',
       buildingView.spriteSheet = new createjs.SpriteSheet @spriteSheetOptions
 
       buildingView.el = new createjs.Sprite buildingView.spriteSheet
+      buildingView.el.setBounds 0, 0, config.worldTileWidth * config.tileWidth, config.worldTileHeight * config.tileHeight
 
-      buildingView.el.gotoAndPlay 'first'
+      buildingView.el.gotoAndPlay "first#{buildingModel.color}"
 
       EventBus.addEventListener "!move:#{viewportModel.uniqueId}", buildingView.setPosition, buildingView
       #EventBus.addEventListener "!scroll:#{viewportModel.uniqueId}", buildingView.setScroll, buildingView
@@ -45,9 +46,9 @@ moduleLibrary.define 'Building.View', gamecore.Pooled.extend 'BuildingView',
         firstOrange:
           frames: [554]
   ,
-    setScroll: ->
-      @scrollX = @viewportModel.scrollX
-      @scrollY = @viewportModel.scrollY
+    _setPosition: ->
+      @intendedX = @model.x * config.tileWidth
+      @intendedY = @model.y * config.tileHeight
 
     setPosition: ->
       animation = "first#{@model.color}"

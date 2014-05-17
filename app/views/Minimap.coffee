@@ -9,6 +9,8 @@ moduleLibrary.define 'Minimap.View', gamecore.Pooled.extend 'MinimapView',
       minimapView.viewportModel = viewportModel
 
       minimapView.lastUpdate = 0
+      minimapView.scrollX = 0
+      minimapView.scrollY = 0
 
       minimapView.el = new createjs.Container
       minimapView.el.x = config.tileWidth# * 1.5
@@ -33,6 +35,7 @@ moduleLibrary.define 'Minimap.View', gamecore.Pooled.extend 'MinimapView',
       minimapView.drawOverlayView()
 
       EventBus.addEventListener "!move:#{viewportModel.uniqueId}", minimapView.drawOverlayView, minimapView
+      EventBus.addEventListener "!scroll:#{viewportModel.uniqueId}", minimapView.setScroll, minimapView
 
       minimapView
 
@@ -79,6 +82,12 @@ moduleLibrary.define 'Minimap.View', gamecore.Pooled.extend 'MinimapView',
 
       el.cache 0, 0, minimapWidth, minimapHeight
 
+    setScroll: ->
+      @scrollX = (@viewportModel.scrollX + 640) * (config.minimapOptions.tileWidth / config.tileWidth)
+      @scrollY = (@viewportModel.scrollY + 480) * (config.minimapOptions.tileHeight / config.tileHeight)
+
+      @drawOverlayView()
+
     drawOverlayView: ->
       el = @overlayEl
 
@@ -90,6 +99,9 @@ moduleLibrary.define 'Minimap.View', gamecore.Pooled.extend 'MinimapView',
 
       x = (@viewportModel.x * config.minimapOptions.tileWidth) - halfWidth
       y = (@viewportModel.y * config.minimapOptions.tileHeight) - halfHeight
+
+      x -= @scrollX
+      y -= @scrollY
 
       w = config.worldTileWidth * config.minimapOptions.tileWidth
       h = config.worldTileHeight * config.minimapOptions.tileHeight

@@ -117,9 +117,7 @@ moduleLibrary.define 'Viewport.View', gamecore.Pooled.extend 'ViewportView',
       @indexOffsetY = utils.clamp @indexOffsetY, config.worldTileHeight
 
       scrollX = @el.x
-      scrollX += Math.floor(config.worldTileWidth / 4 + 4) * config.tileWidth # get rid of these magic numbers
       scrollY = @el.y
-      scrollY += Math.floor(config.worldTileHeight / 4 - 1) * config.tileHeight
       @model.setScroll scrollX, scrollY
 
     drawMap: ->

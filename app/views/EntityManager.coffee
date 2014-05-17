@@ -17,6 +17,8 @@ moduleLibrary.define 'EntityManager.View', gamecore.Pooled.extend 'EntityManager
       entityManagerView = @_super()
 
       entityManagerView.el = new createjs.Container
+      contentWidth = viewportModel.width * config.tileWidth * 3
+      contentHeight = viewportModel.height * config.tileHeight * 3
 
       entityManagerView.lastUpdate = 0
 
@@ -42,14 +44,34 @@ moduleLibrary.define 'EntityManager.View', gamecore.Pooled.extend 'EntityManager
     onTick: (event) ->
       timeDelta = event.time - @lastUpdate
 
-      @el.x = @viewportModel.scrollX
-      @el.y = @viewportModel.scrollY
+      scrollX = @viewportModel.scrollX
+      scrollY = @viewportModel.scrollY
+      @el.x = scrollX + 640
+      @el.y = scrollY + 480
+
+      #@el.x = 0 - ((config.worldTileWidth / 2 - @viewportModel.width / 2) * config.tileWidth)
+      #@el.y = 0 - ((config.worldTileHeight / 2 - @viewportModel.height / 2) * config.tileHeight)
+
+      #newX += Math.floor(config.worldTileWidth / 4 + 4) * config.tileWidth # get rid of these magic numbers
+      #newY += Math.floor(config.worldTileHeight / 4 - 1) * config.tileHeight
 
       if Math.floor(timeDelta / 500) >= 1
         _.each @entityModels, (entityModel) ->
           entityModel.tick()
 
         @lastUpdate = event.time
+
+    addBuilding: (tileMapModel) ->
+      x = Math.floor config.worldTileWidth / 2
+      y = Math.floor config.worldTileHeight / 2
+      color = 'Orange'
+
+      buildingModel = (moduleLibrary.get 'Building.Model').create x, y, color
+      buildingView = (moduleLibrary.get 'Building.View').create buildingModel, @viewportModel
+
+      @el.addChild buildingView.el
+      @entityViews.push buildingView
+      @entityModels.push buildingModel
 
     addVillage: (populationSize, tileMapModel) ->
       buildingCount = 0
