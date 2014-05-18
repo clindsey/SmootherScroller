@@ -49,7 +49,8 @@ moduleLibrary.define 'Rabbit.Model', gamecore.Pooled.extend 'RabbitModel',
             rabbitModel.entityManagerView.removeCarrot rabbitModel.targetCarrot
   ,
     getPathToNearestCarrot: ->
-      carrotModels = @entityManagerView.carrotModels
+      proximityManager = @entityManagerView.proximityManager
+      carrotModels = proximityManager.getNeighbors this
 
       shortestPath = []
       nearestCarrot = undefined

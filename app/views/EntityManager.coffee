@@ -22,6 +22,8 @@ moduleLibrary.define 'EntityManager.View', gamecore.Pooled.extend 'EntityManager
 
       entityManagerView.lastUpdate = 0
 
+      entityManagerView.proximityManager = new ProximityManager 20, 20, config.worldTileWidth, config.worldTileHeight
+
       entityManagerView.scrollX = 0
       entityManagerView.scrollY = 0
 
@@ -43,6 +45,9 @@ moduleLibrary.define 'EntityManager.View', gamecore.Pooled.extend 'EntityManager
       carrotModelIndex = (index for model, index in @carrotModels when model is carrotModel)[0]
 
       if entityViewIndex isnt undefined
+        @proximityManager.removeItem @entityModels[entityModelIndex]
+        @proximityManager.refresh()
+
         @el.removeChild @entityViews[entityViewIndex].el
 
         @entityViews[entityViewIndex].dispose()
@@ -91,7 +96,11 @@ moduleLibrary.define 'EntityManager.View', gamecore.Pooled.extend 'EntityManager
           @entityModels.push carrotModel
           @carrotModels.push carrotModel
 
+          @proximityManager.addItem carrotModel
+
           @permanentsLookup["#{x}_#{y}"] = true
+
+      @proximityManager.refresh()
 
     addRabbits: (populationSize, tileMapModel) ->
       rabbitCount = 0
@@ -141,3 +150,73 @@ moduleLibrary.define 'EntityManager.View', gamecore.Pooled.extend 'EntityManager
         creatureView.dispose()
 
       @release()
+
+class ProximityManager
+  constructor: (@gridWidth, @gridHeight, @worldTileWidth, @worldTileHeight) ->
+    @displayObjects = {}
+    @positions = []
+    @cachedResults = []
+
+  getNeighbors: (displayObject) ->
+    dX = displayObject.x
+    dY = displayObject.y
+    gW = @gridWidth
+    gH = @gridHeight
+    wW = @worldTileWidth
+    wH = @worldTileHeight
+
+    cX = (x) -> utils.clamp x, wW
+    cY = (y) -> utils.clamp y, wH
+    getIndex = (x, y) -> (Math.floor cY(y) / gH) * gW + (cX(x) % gW)
+
+    index = getIndex dX, dY
+
+    if @cachedResults[index]
+      return @cachedResults[index]
+
+    p = @positions
+    r = p[index]
+
+    if r is undefined
+      r = []
+
+    addResult = (i) -> r = r.concat(p[i]) if p[i]
+
+    addResult getIndex dX - 1, dY - 1 # north west
+    addResult getIndex dX, dY - 1 # north
+    addResult getIndex dX + 1, dY - 1 # north east
+
+    addResult getIndex dX - 1, dY # west
+    addResult getIndex dX + 1, dY # east
+
+    addResult getIndex dX - 1, dY + 1 # south west
+    addResult getIndex dX, dY + 1 # south
+    addResult getIndex dX + 1, dY + 1 # south east
+
+    @cachedResults[index] = r
+
+    r
+
+  addItem: (displayObject) ->
+    @displayObjects[displayObject] = displayObject
+
+  removeItem: (displayObject) ->
+    delete @displayObjects[displayObject]
+
+  refresh: ->
+    m = @displayObjects
+    p = []
+
+    for _key, displayObject of m
+      gX = displayObject.x % @gridWidth
+      gY = Math.floor displayObject.y / @gridHeight
+      index = gY * @gridWidth + gX
+
+      if p[index] is undefined
+        p[index] = [displayObject]
+        continue
+
+      p[index].push displayObject
+
+    @cachedResults = []
+    @positions = p
