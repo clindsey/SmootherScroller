@@ -83,8 +83,8 @@ moduleLibrary.define 'Minimap.View', gamecore.Pooled.extend 'MinimapView',
       el.cache 0, 0, minimapWidth, minimapHeight
 
     setScroll: ->
-      @scrollX = (@viewportModel.scrollX + 640) * (config.minimapOptions.tileWidth / config.tileWidth)
-      @scrollY = (@viewportModel.scrollY + 480) * (config.minimapOptions.tileHeight / config.tileHeight)
+      @scrollX = (@viewportModel.scrollX) * (config.minimapOptions.tileWidth / config.tileWidth)
+      @scrollY = (@viewportModel.scrollY) * (config.minimapOptions.tileHeight / config.tileHeight)
 
       @drawOverlayView()
 

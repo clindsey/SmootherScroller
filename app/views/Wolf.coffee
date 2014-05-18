@@ -4,35 +4,32 @@ require 'config'
 utils = moduleLibrary.get 'utils'
 config = moduleLibrary.get 'config'
 
-moduleLibrary.define 'Plant.View', gamecore.Pooled.extend 'PlantView',
-    create: (plantModel, viewportModel) ->
-      plantView = @_super()
+moduleLibrary.define 'Wolf.View', gamecore.Pooled.extend 'Wolf',
+    create: (wolfModel, viewportModel) ->
+      wolfView = @_super()
 
-      plantView.offsetX = 0
-      plantView.offsetY = 0
-      plantView.scrollX = 0
-      plantView.scrollY = 0
+      wolfView.offsetX = 0
+      wolfView.offsetY = 0
+      wolfView.scrollX = 0
+      wolfView.scrollY = 0
 
-      plantView.model = plantModel
+      wolfView.model = wolfModel
 
-      plantView.viewportModel = viewportModel
+      wolfView.viewportModel = viewportModel
 
-      plantView.spriteSheet = new createjs.SpriteSheet @spriteSheetOptions
+      wolfView.spriteSheet = new createjs.SpriteSheet @spriteSheetOptions
 
-      plantView.el = new createjs.Sprite plantView.spriteSheet
+      wolfView.el = new createjs.Sprite wolfView.spriteSheet, 'sleepSouth'
 
-      plantView.el.gotoAndPlay 'first'
+      EventBus.addEventListener "!move:#{viewportModel.uniqueId}", wolfView.setPosition, wolfView
 
-      EventBus.addEventListener "!move:#{viewportModel.uniqueId}", plantView.setPosition, plantView
-      #EventBus.addEventListener "!scroll:#{viewportModel.uniqueId}", plantView.setScroll, plantView
+      wolfView.setPosition()
 
-      plantView.setPosition()
+      _.bindAll wolfView, 'onTick'
 
-      _.bindAll plantView, 'onTick'
+      wolfView.el.addEventListener 'tick', wolfView.onTick
 
-      plantView.el.addEventListener 'tick', plantView.onTick
-
-      plantView
+      wolfView
 
     spriteSheetOptions:
       images: [utils.tilesetImg]
@@ -40,13 +37,10 @@ moduleLibrary.define 'Plant.View', gamecore.Pooled.extend 'PlantView',
         width: config.tileWidth
         height: config.tileHeight
       animations:
-        first:
-          frames: [549]
+        sleepSouth:
+          frames: [320,321]
+          speed: 0.1
   ,
-    setScroll: ->
-      @scrollX = @viewportModel.scrollX
-      @scrollY = @viewportModel.scrollY
-
     setPosition: ->
       centerX = Math.floor @viewportModel.width / 2
       centerY = Math.floor @viewportModel.height / 2

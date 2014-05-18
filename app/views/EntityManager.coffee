@@ -1,11 +1,11 @@
 require 'config'
 require 'utils'
-require 'models/Creature'
-require 'views/Creature'
-require 'models/Plant'
-require 'views/Plant'
-require 'models/Building'
-require 'views/Building'
+require 'models/Carrot'
+require 'views/Carrot'
+require 'models/Rabbit'
+require 'views/Rabbit'
+require 'models/Wolf'
+require 'views/Wolf'
 
 config = moduleLibrary.get 'config'
 utils = moduleLibrary.get 'utils'
@@ -27,6 +27,7 @@ moduleLibrary.define 'EntityManager.View', gamecore.Pooled.extend 'EntityManager
 
       entityManagerView.entityViews = []
       entityManagerView.entityModels = []
+      entityManagerView.carrotModels = []
 
       entityManagerView.permanentsLookup = {}
 
@@ -36,6 +37,21 @@ moduleLibrary.define 'EntityManager.View', gamecore.Pooled.extend 'EntityManager
 
       entityManagerView
   ,
+    removeCarrot: (carrotModel) ->
+      entityViewIndex = (index for view, index in @entityViews when view.model is carrotModel)[0]
+      entityModelIndex = (index for model, index in @entityModels when model is carrotModel)[0]
+      carrotModelIndex = (index for model, index in @carrotModels when model is carrotModel)[0]
+
+      if entityViewIndex isnt undefined
+        @el.removeChild @entityViews[entityViewIndex].el
+
+        @entityViews[entityViewIndex].dispose()
+        @entityModels[entityModelIndex].dispose()
+
+        @entityViews.splice entityViewIndex, 1
+        @entityModels.splice entityModelIndex, 1
+        @carrotModels.splice carrotModelIndex, 1
+
     setPosition: ->
       _.each @entityViews, (entityView) ->
         entityView.setPosition()
@@ -46,14 +62,8 @@ moduleLibrary.define 'EntityManager.View', gamecore.Pooled.extend 'EntityManager
 
       scrollX = @viewportModel.scrollX
       scrollY = @viewportModel.scrollY
-      @el.x = scrollX + 640
-      @el.y = scrollY + 480
-
-      #@el.x = 0 - ((config.worldTileWidth / 2 - @viewportModel.width / 2) * config.tileWidth)
-      #@el.y = 0 - ((config.worldTileHeight / 2 - @viewportModel.height / 2) * config.tileHeight)
-
-      #newX += Math.floor(config.worldTileWidth / 4 + 4) * config.tileWidth # get rid of these magic numbers
-      #newY += Math.floor(config.worldTileHeight / 4 - 1) * config.tileHeight
+      @el.x = scrollX
+      @el.y = scrollY
 
       if Math.floor(timeDelta / 500) >= 1
         _.each @entityModels, (entityModel) ->
@@ -61,99 +71,69 @@ moduleLibrary.define 'EntityManager.View', gamecore.Pooled.extend 'EntityManager
 
         @lastUpdate = event.time
 
-    addBuilding: (tileMapModel) ->
-      x = Math.floor config.worldTileWidth / 2
-      y = Math.floor config.worldTileHeight / 2
-      color = 'Orange'
+    addCarrots: (populationSize, tileMapModel) ->
+      carrotCount = 0
 
-      buildingModel = (moduleLibrary.get 'Building.Model').create x, y, color
-      buildingView = (moduleLibrary.get 'Building.View').create buildingModel, @viewportModel
-
-      @el.addChild buildingView.el
-      @entityViews.push buildingView
-      @entityModels.push buildingModel
-
-    addVillage: (populationSize, tileMapModel) ->
-      buildingCount = 0
-
-      while buildingCount < populationSize
+      while carrotCount < populationSize
         s = config.sessionRandom += 1
         x = Math.floor utils.random(s) * config.worldTileWidth
         y = Math.floor utils.random(s + 1) * config.worldTileHeight
-        color = if Math.floor(utils.random(s + 2) * 2) % 2 then 'Orange' else 'Blue'
 
-        tile = tileMapModel.getCell x, y
+        tile = tileMapModel.getTile x, y
 
-        if tile is 1 and @permanentsLookup["#{x}_#{y}"] isnt true
-          buildingCount += 1
-          buildingModel = (moduleLibrary.get 'Building.Model').create x, y, color
-          buildingView = (moduleLibrary.get 'Building.View').create buildingModel, @viewportModel
+        if tile is 255 and @permanentsLookup["#{x}_#{y}"] isnt true
+          carrotCount += 1
+          carrotModel = (moduleLibrary.get 'Carrot.Model').create x, y
+          carrotView = (moduleLibrary.get 'Carrot.View').create carrotModel, @viewportModel
 
-          @el.addChild buildingView.el
-          @entityViews.push buildingView
-          @entityModels.push buildingModel
-
-          @permanentsLookup["#{x}_#{y}"] = true
-
-          plantModels = @addPlants 3, tileMapModel, buildingModel
-          @addCreatures 1, tileMapModel, buildingModel, plantModels
-
-    addCreatures: (populationSize, tileMapModel, buildingModel, plantModels) ->
-      creatureCount = 0
-
-      creatureModel = undefined
-
-      while creatureCount < populationSize
-        s = config.sessionRandom += 1
-        x = buildingModel.x
-        y = buildingModel.y
-        color = if Math.floor(utils.random(s + 2) * 2) % 2 then 'Orange' else 'Blue'
-
-        tile = tileMapModel.getCell x, y
-
-        if tile is 1
-          creatureCount += 1
-          creatureModel = (moduleLibrary.get 'Creature.Model').create x, y, color, tileMapModel, buildingModel, plantModels
-          creatureView = (moduleLibrary.get 'Creature.View').create creatureModel, @viewportModel
-
-          @el.addChild creatureView.el
-          @entityViews.push creatureView
-          @entityModels.push creatureModel
-
-    addPlants: (populationSize, tileMapModel, buildingModel) ->
-      plantCount = 0
-      giveupCounter = 20
-
-      plantModels = []
-
-      while plantCount < populationSize and giveupCounter
-        s = config.sessionRandom += 1
-        x = utils.clamp Math.floor(buildingModel.x + ((utils.random(s) * 20) - 10)), config.worldTileWidth
-        y = utils.clamp Math.floor(buildingModel.y + ((utils.random(s += 1) * 20) - 10)), config.worldTileHeight
-
-        tile = tileMapModel.getCell x, y
-
-        if tile is 1 and @permanentsLookup["#{x}_#{y}"] isnt true
-          path = tileMapModel.findPath buildingModel.x, buildingModel.y, x, y, 20, 20
-
-          unless path.length
-            giveupCounter -= 1
-            continue
-
-          plantModel = (moduleLibrary.get 'Plant.Model').create x, y
-          plantView = (moduleLibrary.get 'Plant.View').create plantModel, @viewportModel
-
-          plantCount += 1
-
-          @el.addChild plantView.el
-          @entityViews.push plantView
-          @entityModels.push plantModel
+          @el.addChild carrotView.el
+          @entityViews.push carrotView
+          @entityModels.push carrotModel
+          @carrotModels.push carrotModel
 
           @permanentsLookup["#{x}_#{y}"] = true
 
-          plantModels.push plantModel
+    addRabbits: (populationSize, tileMapModel) ->
+      rabbitCount = 0
 
-      plantModels
+      while rabbitCount < populationSize
+        s = config.sessionRandom += 1
+        x = Math.floor utils.random(s) * config.worldTileWidth
+        y = Math.floor utils.random(s + 1) * config.worldTileHeight
+
+        tile = tileMapModel.getTile x, y
+
+        if tile is 255 and @permanentsLookup["#{x}_#{y}"] isnt true
+          rabbitCount += 1
+          rabbitModel = (moduleLibrary.get 'Rabbit.Model').create x, y, tileMapModel, this
+          rabbitView = (moduleLibrary.get 'Rabbit.View').create rabbitModel, @viewportModel
+
+          @el.addChild rabbitView.el
+          @entityViews.push rabbitView
+          @entityModels.push rabbitModel
+
+          @permanentsLookup["#{x}_#{y}"] = true
+
+    addWolves: (populationSize, tileMapModel) ->
+      wolfCount = 0
+
+      while wolfCount < populationSize
+        s = config.sessionRandom += 1
+        x = Math.floor utils.random(s) * config.worldTileWidth
+        y = Math.floor utils.random(s + 1) * config.worldTileHeight
+
+        tile = tileMapModel.getTile x, y
+
+        if tile is 255 and @permanentsLookup["#{x}_#{y}"] isnt true
+          wolfCount += 1
+          wolfModel = (moduleLibrary.get 'Wolf.Model').create x, y, tileMapModel, this
+          wolfView = (moduleLibrary.get 'Wolf.View').create wolfModel, @viewportModel
+
+          @el.addChild wolfView.el
+          @entityViews.push wolfView
+          @entityModels.push wolfModel
+
+          @permanentsLookup["#{x}_#{y}"] = true
 
     dispose: ->
       _.each @entityViews, (creatureView) ->

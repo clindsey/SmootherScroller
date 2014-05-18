@@ -4,36 +4,32 @@ require 'config'
 utils = moduleLibrary.get 'utils'
 config = moduleLibrary.get 'config'
 
-moduleLibrary.define 'Building.View', gamecore.Pooled.extend 'BuildingView',
-    create: (buildingModel, viewportModel) ->
-      buildingView = @_super buildingModel, viewportModel
+moduleLibrary.define 'Carrot.View', gamecore.Pooled.extend 'CarrotView',
+    create: (carrotModel, viewportModel) ->
+      carrotView = @_super()
 
-      buildingView.offsetX = 0
-      buildingView.offsetY = 0
-      buildingView.scrollX = 0
-      buildingView.scrollY = 0
+      carrotView.offsetX = 0
+      carrotView.offsetY = 0
+      carrotView.scrollX = 0
+      carrotView.scrollY = 0
 
-      buildingView.model = buildingModel
+      carrotView.model = carrotModel
 
-      buildingView.viewportModel = viewportModel
+      carrotView.viewportModel = viewportModel
 
-      buildingView.spriteSheet = new createjs.SpriteSheet @spriteSheetOptions
+      carrotView.spriteSheet = new createjs.SpriteSheet @spriteSheetOptions
 
-      buildingView.el = new createjs.Sprite buildingView.spriteSheet
-      buildingView.el.setBounds 0, 0, config.worldTileWidth * config.tileWidth, config.worldTileHeight * config.tileHeight
+      carrotView.el = new createjs.Sprite carrotView.spriteSheet, 'fourth'
 
-      buildingView.el.gotoAndPlay "first#{buildingModel.color}"
+      EventBus.addEventListener "!move:#{viewportModel.uniqueId}", carrotView.setPosition, carrotView
 
-      EventBus.addEventListener "!move:#{viewportModel.uniqueId}", buildingView.setPosition, buildingView
-      #EventBus.addEventListener "!scroll:#{viewportModel.uniqueId}", buildingView.setScroll, buildingView
+      carrotView.setPosition()
 
-      buildingView.setPosition()
+      _.bindAll carrotView, 'onTick'
 
-      _.bindAll buildingView, 'onTick'
+      carrotView.el.addEventListener 'tick', carrotView.onTick
 
-      buildingView.el.addEventListener 'tick', buildingView.onTick
-
-      buildingView
+      carrotView
 
     spriteSheetOptions:
       images: [utils.tilesetImg]
@@ -41,20 +37,16 @@ moduleLibrary.define 'Building.View', gamecore.Pooled.extend 'BuildingView',
         width: config.tileWidth
         height: config.tileHeight
       animations:
-        firstBlue:
-          frames: [544]
-        firstOrange:
-          frames: [554]
+        first:
+          frames: [272]
+        second:
+          frames: [273]
+        third:
+          frames: [274]
+        fourth:
+          frames: [275]
   ,
-    _setPosition: ->
-      @intendedX = @model.x * config.tileWidth
-      @intendedY = @model.y * config.tileHeight
-
     setPosition: ->
-      animation = "first#{@model.color}"
-
-      @el.gotoAndPlay animation unless @el.currentAnimation is animation
-
       centerX = Math.floor @viewportModel.width / 2
       centerY = Math.floor @viewportModel.height / 2
 

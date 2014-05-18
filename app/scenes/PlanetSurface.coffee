@@ -60,10 +60,12 @@ moduleLibrary.define 'PlanetSurface.Scene', gamecore.Pooled.extend 'PlanetSurfac
       @views.entityManagerView.onTick event
       @views.minimapView.onTick event
 
+      ###
       w = config.viewportOptions.width * config.tileWidth
       h = config.viewportOptions.height * config.tileHeight
 
-      #@views.entityManagerView.el.cache 0 - w, 0 - h, w * 3, h * 3
+      @views.entityManagerView.el.cache 0 - w, 0 - h, w * 3, h * 3
+      ###
 
     onKeyDown: (_event, args) ->
       if args.keyCode is 78
