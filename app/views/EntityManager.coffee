@@ -26,7 +26,8 @@ moduleLibrary.define 'EntityManager.View', gamecore.Pooled.extend 'EntityManager
 
       entityManagerView.lastUpdate = 0
 
-      entityManagerView.proximityManager = new ProximityManager config.generator.options.worldChunkWidth, config.generator.options.worldChunkHeight, config.worldTileWidth, config.worldTileHeight
+      entityManagerView.carrotProximityManager = new ProximityManager config.generator.options.worldChunkWidth, config.generator.options.worldChunkHeight, config.worldTileWidth, config.worldTileHeight
+      entityManagerView.rabbitProximityManager = new ProximityManager config.generator.options.worldChunkWidth, config.generator.options.worldChunkHeight, config.worldTileWidth, config.worldTileHeight
 
       entityManagerView.scrollX = 0
       entityManagerView.scrollY = 0
@@ -60,11 +61,18 @@ moduleLibrary.define 'EntityManager.View', gamecore.Pooled.extend 'EntityManager
       @entityViews.push rabbitView
       @entityModels.push rabbitModel
 
+      @rabbitProximityManager.addEntity rabbitModel
+
+      @rabbitProximityManager.refresh()
+
     removeRabbit: (rabbitModel) ->
       entityViewIndex = (index for view, index in @entityViews when view.model is rabbitModel)[0]
       entityModelIndex = (index for model, index in @entityModels when model is rabbitModel)[0]
 
       if entityViewIndex isnt undefined
+        @rabbitProximityManager.removeEntity @entityModels[entityModelIndex]
+        @rabbitProximityManager.refresh()
+
         @rabbitLayerEl.removeChild @entityViews[entityViewIndex].el
 
         @entityViews[entityViewIndex].dispose()
@@ -88,8 +96,8 @@ moduleLibrary.define 'EntityManager.View', gamecore.Pooled.extend 'EntityManager
         delete @permanentsLookup["#{x}_#{y}"]
         @carrotCount -= 1
 
-        @proximityManager.removeEntity @entityModels[entityModelIndex]
-        @proximityManager.refresh()
+        @carrotProximityManager.removeEntity @entityModels[entityModelIndex]
+        @carrotProximityManager.refresh()
 
         @carrotLayerEl.removeChild @entityViews[entityViewIndex].el
 
@@ -123,6 +131,8 @@ moduleLibrary.define 'EntityManager.View', gamecore.Pooled.extend 'EntityManager
 
         @lastUpdate = event.time
 
+        @rabbitProximityManager.refresh()
+
         @carrotGenesisCounter -= 1
         if @carrotGenesisCounter < 0
           @carrotGenesisCounter = 10
@@ -153,13 +163,13 @@ moduleLibrary.define 'EntityManager.View', gamecore.Pooled.extend 'EntityManager
           @entityModels.push carrotModel
           @carrotModels.push carrotModel
 
-          @proximityManager.addEntity carrotModel
+          @carrotProximityManager.addEntity carrotModel
 
           @permanentsLookup["#{x}_#{y}"] = true
 
       @carrotCount += carrotCount
 
-      @proximityManager.refresh()
+      @carrotProximityManager.refresh()
 
     addRabbits: (populationSize, tileMapModel) ->
       rabbitCount = 0
@@ -180,7 +190,11 @@ moduleLibrary.define 'EntityManager.View', gamecore.Pooled.extend 'EntityManager
           @entityViews.push rabbitView
           @entityModels.push rabbitModel
 
+          @rabbitProximityManager.addEntity rabbitModel
+
           #@permanentsLookup["#{x}_#{y}"] = true
+
+      @rabbitProximityManager.refresh()
 
     addWolves: (populationSize, tileMapModel) ->
       wolfCount = 0

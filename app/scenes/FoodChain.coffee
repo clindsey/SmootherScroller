@@ -8,9 +8,9 @@ require 'views/Minimap'
 config = moduleLibrary.get 'config'
 utils = moduleLibrary.get 'utils'
 
-CARROT_COUNT = 100
-RABBIT_COUNT = 1
-WOLF_COUNT = 0
+CARROT_COUNT = 140
+RABBIT_COUNT = 20
+WOLF_COUNT = 2
 
 # due for refactor. should attach views dynamically
 # the name for the models and views here is just stupid

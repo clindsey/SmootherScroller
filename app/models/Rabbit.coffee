@@ -54,12 +54,12 @@ moduleLibrary.define 'Rabbit.Model', gamecore.Pooled.extend 'RabbitModel',
               rabbitModel.energy += 10
 
               rabbitModel.eatCount += 1
-              if rabbitModel.eatCount % 5 is 0
+              if rabbitModel.eatCount % 2 is 0
                 rabbitModel.entityManagerView.spawnRabbit rabbitModel
   ,
     getPathToNearestCarrot: ->
-      proximityManager = @entityManagerView.proximityManager
-      carrotModels = proximityManager.getNeighbors this
+      carrotProximityManager = @entityManagerView.carrotProximityManager
+      carrotModels = carrotProximityManager.getNeighbors this
 
       shortestPath = []
       nearestCarrot = undefined

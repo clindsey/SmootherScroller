@@ -1,6 +1,6 @@
 config =
-  seed: 1400453311040
-  sessionRandom: 1400453311040
+  seed: +new Date #1400453311040
+  sessionRandom: +new Date #1400453311040
 
   fps: 20
 

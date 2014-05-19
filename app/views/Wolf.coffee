@@ -10,8 +10,6 @@ moduleLibrary.define 'Wolf.View', gamecore.Pooled.extend 'Wolf',
 
       wolfView.offsetX = 0
       wolfView.offsetY = 0
-      wolfView.scrollX = 0
-      wolfView.scrollY = 0
 
       wolfView.model = wolfModel
 
@@ -21,6 +19,7 @@ moduleLibrary.define 'Wolf.View', gamecore.Pooled.extend 'Wolf',
 
       wolfView.el = new createjs.Sprite wolfView.spriteSheet, 'sleepSouth'
 
+      EventBus.addEventListener "!move:#{wolfModel.uniqueId}", wolfView.onModelMove, wolfView
       EventBus.addEventListener "!move:#{viewportModel.uniqueId}", wolfView.setPosition, wolfView
 
       wolfView.setPosition()
@@ -37,11 +36,57 @@ moduleLibrary.define 'Wolf.View', gamecore.Pooled.extend 'Wolf',
         width: config.tileWidth
         height: config.tileHeight
       animations:
-        sleepSouth:
+        restingEast:
+          frames: [288,289,290,291]
+          speed: 0.5
+        restingNorth:
+          frames: [292,293,294,295]
+          speed: 0.5
+        restingWest:
+          frames: [296,297,298,299]
+          speed: 0.5
+        restingSouth:
+          frames: [300,301,302,303]
+          speed: 0.5
+        workingSouth:
           frames: [320,321]
           speed: 0.1
+        workingWest:
+          frames: [322,323]
+          speed: 0.1
+        workingNorth:
+          frames: [324,325]
+          speed: 0.1
+        workingEast:
+          frames: [326,327]
+          speed: 0.1
   ,
+    onModelMove: ->
+      dX = 0
+      dY = 0
+
+      switch @model.direction
+        when 'North'
+          dY = config.tileHeight
+        when 'East'
+          dX = 0 - config.tileWidth
+        when 'South'
+          dY = 0 - config.tileHeight
+        when 'West'
+          dX = config.tileWidth
+
+      @offsetX = dX
+      @offsetY = dY
+
+      createjs.Tween.get(this).to {offsetX: 0, offsetY: 0}, 450
+
+      @setPosition()
+
     setPosition: ->
+      animation = "#{@model.stateMachine.current}#{@model.direction}"
+
+      @el.gotoAndPlay animation unless @el.currentAnimation is animation
+
       centerX = Math.floor @viewportModel.width / 2
       centerY = Math.floor @viewportModel.height / 2
 
@@ -85,10 +130,11 @@ moduleLibrary.define 'Wolf.View', gamecore.Pooled.extend 'Wolf',
       @intendedY = newY
 
     onTick: ->
-      @el.x = @intendedX + @scrollX
-      @el.y = @intendedY + @scrollY
+      @el.x = @intendedX + @offsetX
+      @el.y = @intendedY + @offsetY
 
     dispose: ->
       EventBus.removeEventListener "!move:#{@viewportModel.uniqueId}", @setPosition, this
+      EventBus.removeEventListener "!move:#{@model.uniqueId}", @onModelMove, this
 
       @release()
