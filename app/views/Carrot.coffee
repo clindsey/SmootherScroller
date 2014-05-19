@@ -19,7 +19,7 @@ moduleLibrary.define 'Carrot.View', gamecore.Pooled.extend 'CarrotView',
 
       carrotView.spriteSheet = new createjs.SpriteSheet @spriteSheetOptions
 
-      carrotView.el = new createjs.Sprite carrotView.spriteSheet, 'fourth'
+      carrotView.el = new createjs.Sprite carrotView.spriteSheet, ('first second third fourth'.split(' '))[carrotModel.maturity]
 
       EventBus.addEventListener "!move:#{viewportModel.uniqueId}", carrotView.setPosition, carrotView
 
@@ -90,6 +90,10 @@ moduleLibrary.define 'Carrot.View', gamecore.Pooled.extend 'CarrotView',
       @intendedY = newY
 
     onTick: ->
+      animation =  ('first second third fourth'.split(' '))[@model.maturity]
+
+      @el.gotoAndPlay animation unless @el.currentAnimation is animation
+
       @el.x = @intendedX + @scrollX
       @el.y = @intendedY + @scrollY
 

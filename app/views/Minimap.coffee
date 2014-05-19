@@ -16,6 +16,8 @@ moduleLibrary.define 'Minimap.View', gamecore.Pooled.extend 'MinimapView',
       minimapView.el.x = config.tileWidth# * 1.5
       minimapView.el.y = config.tileHeight# * 1.5
 
+      minimapView.el.shadow = new createjs.Shadow 'rgba(0, 0, 0, 0.6)', 1, 1, 0
+
       minimapView.terrainEl = new createjs.Shape
       @buildTileViews minimapView, tileMapModel
       minimapView.el.addChild minimapView.terrainEl
@@ -78,7 +80,7 @@ moduleLibrary.define 'Minimap.View', gamecore.Pooled.extend 'MinimapView',
         entityX = entityModel.x * tileWidth
         entityY = entityModel.y * tileHeight
 
-        el.graphics.beginFill(entityModel.minimapColor).drawRect(entityX, entityY, tileWidth, tileHeight)
+        el.graphics.beginFill(entityModel.minimapColor).drawCircle(entityX, entityY, tileWidth)
 
       el.cache 0, 0, minimapWidth, minimapHeight
 
@@ -106,10 +108,12 @@ moduleLibrary.define 'Minimap.View', gamecore.Pooled.extend 'MinimapView',
       w = config.worldTileWidth * config.minimapOptions.tileWidth
       h = config.worldTileHeight * config.minimapOptions.tileHeight
 
+      el.shadow = new createjs.Shadow '#000000', 1, 1, 0
+
       g = el.graphics
       g.clear()
       g.setStrokeStyle(2, 'square')
-      g.beginStroke('rgba(136, 0, 0, 0.5)')
+      g.beginStroke('rgba(255, 255, 0, 0.6)')
 
       g.drawRect x, y, width, height # center
       g.drawRect x - w, y, width, height # west

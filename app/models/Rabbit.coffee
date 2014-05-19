@@ -10,6 +10,8 @@ moduleLibrary.define 'Rabbit.Model', gamecore.Pooled.extend 'RabbitModel',
 
       rabbitModel.x = x
       rabbitModel.y = y
+      rabbitModel.energy = 15
+      rabbitModel.eatCount = 0
       rabbitModel.direction = 'South'
       rabbitModel.tileMapModel = tileMapModel
       rabbitModel.entityManagerView = entityManagerView
@@ -46,7 +48,14 @@ moduleLibrary.define 'Rabbit.Model', gamecore.Pooled.extend 'RabbitModel',
               rabbitModel.targetCarrot = result.model
 
           onwork: ->
-            rabbitModel.entityManagerView.removeCarrot rabbitModel.targetCarrot
+            ateCarrot = rabbitModel.entityManagerView.removeCarrot rabbitModel.targetCarrot
+
+            if ateCarrot
+              rabbitModel.energy += 10
+
+              rabbitModel.eatCount += 1
+              if rabbitModel.eatCount % 5 is 0
+                rabbitModel.entityManagerView.spawnRabbit rabbitModel
   ,
     getPathToNearestCarrot: ->
       proximityManager = @entityManagerView.proximityManager
@@ -56,6 +65,9 @@ moduleLibrary.define 'Rabbit.Model', gamecore.Pooled.extend 'RabbitModel',
       nearestCarrot = undefined
 
       for carrotModel in carrotModels
+        continue if carrotModel.marked
+        continue if carrotModel.maturity < 3
+
         path = @getPath carrotModel
 
         if path.length > 1
@@ -66,6 +78,7 @@ moduleLibrary.define 'Rabbit.Model', gamecore.Pooled.extend 'RabbitModel',
             shortestPath = path
             nearestCarrot = carrotModel
 
+      nearestCarrot.marked = true if nearestCarrot isnt undefined
       {path: shortestPath, model: nearestCarrot}
 
     setPosition: (x, y) ->
@@ -83,7 +96,14 @@ moduleLibrary.define 'Rabbit.Model', gamecore.Pooled.extend 'RabbitModel',
           when 'working'
             @stateMachine.rest()
           when 'resting'
-            @stateMachine.work()
+            if @energy < 30
+              @stateMachine.work()
+
+      @energy -= 1
+      if @energy < 0
+        @targetCarrot.marked = false if @targetCarrot
+        @targetCarrot = undefined
+        @entityManagerView.removeRabbit this
 
     getPath: (targetModel) ->
       path = @tileMapModel.findPath @x, @y, targetModel.x, targetModel.y, 60, 60

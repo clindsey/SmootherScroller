@@ -8,8 +8,8 @@ require 'views/Minimap'
 config = moduleLibrary.get 'config'
 utils = moduleLibrary.get 'utils'
 
-CARROT_COUNT = 30
-RABBIT_COUNT = 3
+CARROT_COUNT = 100
+RABBIT_COUNT = 1
 WOLF_COUNT = 0
 
 # due for refactor. should attach views dynamically
@@ -36,7 +36,7 @@ moduleLibrary.define 'FoodChain.Scene', gamecore.Pooled.extend 'FoodChainScene',
 
       @createViewport foodChainScene, foodChainScene.models.tileMapModel
 
-      foodChainScene.views.entityManagerView = (moduleLibrary.get 'EntityManager.View').create foodChainScene.models.viewportModel
+      foodChainScene.views.entityManagerView = (moduleLibrary.get 'EntityManager.View').create foodChainScene.models.viewportModel, foodChainScene.models.tileMapModel
 
       foodChainScene.el.addChild foodChainScene.views.entityManagerView.el
       foodChainScene.views.entityManagerView.addCarrots CARROT_COUNT, foodChainScene.models.tileMapModel
